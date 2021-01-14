@@ -9,32 +9,20 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link href="StyleSheet.css" rel="stylesheet" />
     <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-        }
 
         form {
             border: 3px solid #f1f1f1;
         }
 
         input[type=text], input[type=password] {
-            width: 100%;
+            width: 90%;
             padding: 12px 20px;
             margin: 8px 0;
             display: inline-block;
             border: 1px solid #ccc;
             box-sizing: border-box;
-        }
-
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
-            border: none;
-            cursor: pointer;
-            width: 100%;
         }
 
             button:hover {
@@ -101,7 +89,7 @@
             if (c) {
                 let customerTostring = JSON.stringify(c);
                 localStorage.setItem("loggedIn", customerTostring);
-                swal(c.Name + " You are logged in!", "Thank you :)", "success").then(function(){ window.location.href = 'Favorites.html' }); 
+                swal(c.Name + " You are logged in!", "Thank you :)", "success").then(function () { window.location.href = 'Favorites.html' });
             }
             else
                 swal("Your Email or Password is incorrect", "Please try again", "warning");
@@ -113,35 +101,28 @@
     </script>
 </head>
 <body>
-
-    <h2>Login Form</h2>
-
-    <form id="loginForm">
-        <!--<div class="imgcontainer">
-            <img src="img_avatar2.png" alt="Avatar" class="avatar">
-        </div>-->
-
-        <div class="container">
-            <label for="uEmail"><b>Email</b></label>
-            <input type="text" placeholder="Enter Email" name="uEmail" id="uEmailTB" required>
-
-            <label for="uPass"><b>Password</b></label>
-            <input type="password" placeholder="Enter Password" name="psw" id="uPassTB" required>
-
-            <button type="submit">Login</button>
-            <!--<label>
-                <input type="checkbox" checked="checked" name="remember"> Remember me
-            </label>-->
-        </div>
-
-        <!--<div class="container" style="background-color:#f1f1f1">
-            <button type="button" class="cancelbtn">Cancel</button>
-            <span class="psw">Forgot <a href="#">password?</a></span>
-        </div>-->
-    </form>
-    <a href="Favorites.html" class="myButtonadd" id="btnGuest">
-        I'm a Guest :)
-    </a>
+    <div class="container">
+        <form id="loginForm">
+            <h2>Login Form</h2>
+            <div class="form-group">
+                <div class="imgcontainer">
+                    <img src="default.jpg" alt="Avatar" class="avatar"/>
+                </div>
+                <div class="form-group">
+                    <label for="uEmail">Email</label>
+                    <input type="text" placeholder="Enter Email" name="uEmail" id="uEmailTB" required>
+                </div>
+                <div class="form-group">
+                    <label for="uPass"><b>Password</b></label>
+                    <input type="password" placeholder="Enter Password" name="psw" id="uPassTB" required>
+                </div>
+                <button class="myButton" type="submit">Login</button>
+            </div>
+        </form>
+    </div>
+                <a href="Favorites.html" class="myButtonadd" id="btnGuest">
+                    I'm a Guest :)
+                </a>
 
 </body>
 </html>

@@ -58,9 +58,13 @@
                 render(datafiltered);
             }
 
-            function render(arr) {
+        function render(arr) {
 
-                let str = `<div><table><tr>
+            if (arr.length == 0) {
+                str = `<br/><br/><br/><h2>There is no restaurants to display...</h2><h3>You can change your preferences and try again</h3>`;
+            }
+            else {
+                str = `<div><table><tr>
                                                     <td><h3>Image</h3></td>
                                                     <td><h3>ID</h3></td>
                                                     <td><h3>Name</h3></td>
@@ -74,13 +78,13 @@
 
                 for (var i = 0; i < arr.length; i++) {
                     str += `<tr>`
-                if (arr[i].Image =="") {
-                    str += `<td><img src="default.jpg"/></td> `
-                }
-                else {
-                    str += `<td><img src="`+arr[i].Image+`"></td>`
-                }
-                                                                str+= `<td>` + arr[i].Id + `</td>
+                    if (arr[i].Image == "") {
+                        str += `<td><img src="default.jpg"/></td> `
+                    }
+                    else {
+                        str += `<td><img src="` + arr[i].Image + `"></td>`
+                    }
+                    str += `<td>` + arr[i].Id + `</td>
                                                                 <td>` + arr[i].Name + `</td>
                                                                 <td>` + arr[i].Reating + `</td >
                                                                 <td>` + arr[i].Category + `</td>
@@ -91,6 +95,7 @@
                                                             </tr>`
                 }
                 str += `</table></div>`;
+            }
                 $("#ph2").html(str);
 
 
@@ -105,8 +110,8 @@
 </head>
 <body>
     <div>
-        <a href="Login.html" class="myButtonadd" id = "btnSignout">
-            Sign Out
+        <a href="Login.html" class="btn btn-info btn-lg myButtonadd" id="btnSignout">
+            <span class="glyphicon glyphicon-log-out"></span> Log out
         </a>
         <div>
             <br><h1>Choose cuisine in NYC</h1>

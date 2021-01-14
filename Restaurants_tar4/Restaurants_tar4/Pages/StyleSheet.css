@@ -111,8 +111,8 @@ select {
     background-position: right 20px center, right bottom, right bottom, right bottom;
 }
 
-a.myButtonadd {
-    float: left;
+.btn-lg.myButtonadd {
+    float: right;
 }
 
 select:hover {
