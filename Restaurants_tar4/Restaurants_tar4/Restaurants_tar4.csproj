@@ -155,11 +155,13 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Controllers\businessesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Businesses .cs" />
+    <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\DAL\DBServices.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -171,6 +173,16 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Pages\Choose Highlights.html" />
+    <Content Include="Pages\customerForm.html" />
+    <Content Include="Pages\default.jpg" />
+    <Content Include="Pages\Favorites.html" />
+    <Content Include="Pages\Index.html" />
+    <Content Include="Pages\katarina-sikuljak-BeEnOzyIBsU-unsplash.jpg" />
+    <Content Include="Pages\Login.html" />
+    <Content Include="Pages\StyleSheet.css" />
+    <Content Include="Scripts\ajaxCalls.js" />
+    <Content Include="Scripts\ajaxCallsWithKey.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\HelpPage\Views\Web.config" />
@@ -215,7 +227,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

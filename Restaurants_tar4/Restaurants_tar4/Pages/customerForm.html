@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <script src="../Scripts/jquery-3.4.1.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../Scripts/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <link href="StyleSheet.css" rel="stylesheet" />
+    
+    <meta charset="utf-8" />
+    <title></title>
+    <script>
+        $(document).ready(function () {
+            
+            $("#pForm").submit(f1);
+            selectedRadio = 0;
+        });
+
+
+        function f1() {
+            uploadimg();
+            addCustomer();
+            return false;
+        }
+
+        function addCustomer() {
+
+            customer = {
+                Name: $("#nameTB").val(),
+                Lastname: $("#lnameTB").val(),
+                Email: $("#emailTB").val(),
+                Phone: $("#phoneTB").val(),
+                Password: $("#passwordTB").val(),
+                Img: imgName,
+                PriceRange: selectedRadio
+            }
+          
+            let customerTostring = JSON.stringify(customer);
+            localStorage.setItem("customer", customerTostring);
+            window.location.href = 'Choose Highlights.html';
+        }
+
+        function uploadimg() {
+            var data = new FormData();
+            var files = $("#files").get(0).files;
+            let imgEmail = $("#emailTB").val();
+            imgName = imgEmail + "_img";
+            if (files.length > 0) {
+                data.append("UploadedImage", files[0]);
+                data.append("name", imgName);
+                $.ajax({
+                    type: "POST",
+                    url: "../api/businesses/FileUpload",
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    success: imgsucces,
+                    error: imgerror
+                });
+            }
+            else { imgName = ""}
+           
+            return false;
+        }
+        function imgsucces(dataimg) {
+            alert("the image was been uploaded!");
+        }
+        function imgerror(errmsg) {
+            alert("the image uploading has failed!");
+            console.log(errmsg);
+        }
+
+        function radioPrice(rb) {
+            selectedRadio = rb.id;
+        }
+
+    </script>
+</head>
+<body>
+    <div class="container">
+        <form id="pForm">
+            <h2>Insert Your Details</h2>
+            <div class="form-group">
+                <label for="nameTB"><span class="red-star">★ </span>Name</label>
+                <input type="text" class="form-control" id="nameTB" placeholder="Enter your first name" required
+                       pattern="^[a-zA-Z]{2,10}$"
+                       oninvalid="this.setCustomValidity('Invalid Name Format')"
+                       oninput="this.setCustomValidity('')"
+                       value="doron"/>
+            </div>
+            <div class="form-group">
+                <label for="lnameTB"><span class="red-star">★ </span>Last Name</label>
+                <input type="text" class="form-control" id="lnameTB" placeholder="Enter your last name" required
+                       pattern="^[a-zA-Z]{2,20}$"
+                       oninvalid="this.setCustomValidity('Invalid Last Name Format')"
+                       oninput="this.setCustomValidity('')"
+                       value="batsir"/>
+            </div>
+            <div class="form-group">
+                <label for="emailTB"><span class="red-star">★ </span>Email</label>
+                <input type="email" class="form-control" id="emailTB" placeholder="Enter your email" required
+                       value="doron@1234.com"/>
+            </div>
+            <div class="form-group">
+                <label for="phoneTB"> <span class="red-star">★ </span> Phone (using a pattern validator) </label>
+                <input type="tel" class="form-control" placeholder="Enter your phone number ddd-dd-ddddddd" id="phoneTB" required
+                       pattern="[0-9]{3}-[0-9]{2}-[0-9]{7}"
+                       oninvalid="this.setCustomValidity('Format should be ddd-dd-ddddddd')"
+                       oninput="this.setCustomValidity('')"
+                       value="123-45-1234567"/>
+            </div>
+            <div class="form-group">
+                <label for="passwordTB"> <span class="red-star">★ </span> Password (using a custom validator) </label>
+                <input type="password" class="form-control" id="passwordTB" placeholder="Enter your password" required
+                       pattern="(?=.*\d)(?=.*[A-Z]).{8,}"
+                       oninvalid="this.setCustomValidity('Must contain at least one number and one uppercase letter, and at least 8 or more characters')"
+                       oninput="this.setCustomValidity('')"
+                        value="1Abredskfdksd"/>
+            </div>
+            <div class="form-group">
+                <label for="imgTB">Image </label>
+                <input type="file" name="files" id="files" />
+            </div>
+            <div>
+                <p>Please select your price range:</p>
+                <input type="radio" id="1" value="1" name="pr" onchange="radioPrice(this)" /><label>1</label>
+                <input type="radio" id="2" value="2" name="pr" onchange="radioPrice(this)" /><label>2</label>
+                <input type="radio" id="3" value="3" name="pr" onchange="radioPrice(this)" /><label>3</label>
+                <input type="radio" id="4" value="4" name="pr" onchange="radioPrice(this)" /><label>4</label>
+                <input type="radio" id="5" value="5" name="pr" onchange="radioPrice(this)" /><label>5</label>
+            </div>
+            <br />
+            <br />
+            <a href="Choose Highlights.html">
+                <input class="myButton" type="submit" value="Next" />
+            </a>
+        </form>
+    </div>
+</body>
+</html>

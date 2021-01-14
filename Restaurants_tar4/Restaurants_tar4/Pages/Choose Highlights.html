@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <script src="../Scripts/jquery-3.4.1.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../Scripts/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <link href="StyleSheet.css" rel="stylesheet" />
+
+    <meta charset="utf-8" />
+    <title></title>
+    <script>
+
+        $(document).ready(function () {
+            hArr = ["Wifi", "Serves Alcohol", "Breakfast", "Dinner", "Lunch", "Vegetarian Friendly", "Takeaway Available", "Credit Card", "Delivery", "Cash"];
+            renderHighlights(hArr);
+            customerHighlight = [];
+            customerParse = JSON.parse(localStorage.getItem("customer"));
+            console.log(customerParse);
+            
+        });
+
+        function renderHighlights(hArr) {
+            let str = "";
+
+            for (var i = 0; i < hArr.length; i++) {
+                str += `<input type="checkbox" id='` + hArr[i] + `' value='` + hArr[i] + `'onchange='cbxHighlight(this)'>
+                       <label>`+ hArr[i] + `</label><br>`
+            }
+            document.getElementById("highlightsDIV").innerHTML = str;
+        }
+
+        function cbxHighlight(cbx) {
+            console.log(cbx.id);
+            console.log(cbx.checked);
+            if (cbx.checked) {
+                customerHighlight.push(cbx.id);
+                console.log(customerHighlight);
+            }
+            else {
+                customerHighlight = customerHighlight.filter((item) => item !== cbx.id);
+                console.log(customerHighlight);
+            }
+        }
+
+        btnPostHighlight = () => {
+            customerParse.ChList = customerHighlight;        
+            console.log(customerParse);
+            ajaxCall("POST", "../api/businesses/cusTomer", JSON.stringify(customerParse), postSuccess, postError);
+
+        }
+
+        function postSuccess(data) {
+            swal("Your Details Added Successfuly!", "Thank you :)", "success");
+        }
+
+        function postError(err) {
+            swal("Connection to server are failed :(", "Please Try Again", "danger");
+        }
+
+    </script>
+        </head >
+            <body>
+                <a href="customerForm.html" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-circle-arrow-left"></span> Back
+    </a>
+                <div>
+                    <h2>Select your Preferences</h2>
+                    <div id="highlightsDIV"></div>
+                    <br />
+                    <br />
+                    <input class="myButton" type="button" value="Submit" onclick="btnPostHighlight()" />
+                </div>
+            </body>
+</html >
