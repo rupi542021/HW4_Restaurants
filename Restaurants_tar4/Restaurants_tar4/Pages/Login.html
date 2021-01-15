@@ -71,7 +71,8 @@
         $(document).ready(function () {
             $("#loginForm").submit(checkCustomer);
             $("#btnGuest").click(function () {
-                localStorage.removeItem("loggedIn");
+                localStorage.setItem("loggedIn", "");
+               // localStorage.removeItem("loggedIn");
             });
         });
 
@@ -106,7 +107,7 @@
             <h2>Login Form</h2>
             <div class="form-group">
                 <div class="imgcontainer">
-                    <img src="default.jpg" alt="Avatar" class="avatar"/>
+                    <img src="download.png" alt="Avatar" class="avatar"/>
                 </div>
                 <div class="form-group">
                     <label for="uEmail">Email</label>

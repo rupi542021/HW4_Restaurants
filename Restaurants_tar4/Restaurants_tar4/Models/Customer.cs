@@ -53,5 +53,11 @@ namespace tar2.Models
             DBServices dbs = new DBServices();
             return dbs.checkCustomer(email, pass);
         }
+
+        public void Update()
+        {
+            DBServices dbs = new DBServices();          
+            dbs.UpdateCustomerHighlights(this);
+        }
     }
 }

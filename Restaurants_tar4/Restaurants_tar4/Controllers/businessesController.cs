@@ -17,18 +17,27 @@ namespace tar1.Controllers
     public class businessesController : ApiController
     {
         // GET api/<controller>
-        public List<Businesses> Get()
+        //public List<Businesses> Get()
+        //{
+        //    Businesses favourite = new Businesses();
+        //    //List<Businesses> favourites = favourite.Read();
+        //    //return favourite.Read();
+        //    return null;
+        //}
+        [HttpGet]
+        [Route("api/businesses/{cusineId}/{pr}/{hlist}")]
+        public List<Businesses> Get(int cusineId, int pr, List<string> hlist)
         {
-           Businesses favourite = new Businesses();
-           //List<Businesses> favourites = favourite.Read();
-           return favourite.Read();
+            Businesses restaurant = new Businesses();
+            //List<Businesses> favourites = favourite.Read();
+            return restaurant.Read(cusineId,pr,hlist);
         }
 
         // GET api/<controller>/5
-        public string Get(int id)
-        {
-            return "value";
-        }
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
         [HttpGet]
         [Route("api/businesses/checkCust")]
         public HttpResponseMessage GetCustomer(string email, string pass) {
@@ -90,7 +99,7 @@ namespace tar1.Controllers
             try
             {
                 cust.Insert();
-                return Request.CreateResponse(HttpStatusCode.OK,"");
+                return Request.CreateResponse(HttpStatusCode.OK, cust);
             }
             catch {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError,"connecting error");
@@ -133,8 +142,17 @@ namespace tar1.Controllers
 
 
         // PUT api/<controller>/5
-        public void Put(int id, [FromBody] string value)
+        public HttpResponseMessage Put([FromBody] Customer c)
         {
+            try
+            {
+                c.Update();
+                return Request.CreateResponse(HttpStatusCode.OK, c);
+            }
+            catch
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "connecting error");
+            }
         }
 
         // DELETE api/<controller>/5

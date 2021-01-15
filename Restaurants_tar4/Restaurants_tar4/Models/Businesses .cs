@@ -20,27 +20,6 @@ namespace tar1.Models
         string url;
         List<string> highlights;
 
-        //public Businesses(string image, int id, string name, float reating, string category, int priceRange, string phone, string address)
-        //{
-        //    Image = image;
-        //    Id = id;
-        //    Name = name;
-        //    Reating = reating;
-        //    Category = category;
-        //    PriceRange = priceRange;
-        //    Phone = phone;
-        //    Address = address;
-        //}
-
-        //public string Image { get => image; set => image = value; }
-        //public int Id { get => id; set => id = value; }
-        //public string Name { get => name; set => name = value; }
-        //public float Reating { get => reating; set => reating = value; }
-        //public string Category { get => category; set => category = value; }
-        //public int PriceRange { get => priceRange; set => priceRange = value; }
-        //public string Phone { get => phone; set => phone = value; }
-        //public string Address { get => address; set => address = value; }
-
         public Businesses() { }
 
         public Businesses(string image, int id, string name, float reating, string category, int priceRange, string phone, string address, int cuisineId, string url, List<string> highlights)
@@ -85,10 +64,17 @@ namespace tar1.Models
 
 
 
-            public List<Businesses> Read()
+        //    public List<Businesses> Read()
+        //{
+        //    DBServices dbs = new DBServices();
+        //    List<Businesses> b = dbs.getBusinesses();
+        //    return b;
+        //}
+
+        public List<Businesses> Read(int cusineId, int pr, List<string> hlist)
         {
             DBServices dbs = new DBServices();
-            List<Businesses> b = dbs.getBusinesses();
+            List<Businesses> b = dbs.getBusinesses(cusineId, pr, hlist);
             return b;
         }
     }

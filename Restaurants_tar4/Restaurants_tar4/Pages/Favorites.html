@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <title></title>
-    <script src="../Scripts/ajaxCallsWithKey.js"></script>
+    <script src="../Scripts/ajaxCalls.js"></script>
     <script src="../Scripts/jquery-3.4.1.min.js"></script>
     <script src="../Scripts/bootstrap.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,49 +14,73 @@
     <link href="StyleSheet.css" rel="stylesheet" />
     <script>
         $(document).ready(function () {
-
+            if (localStorage.getItem("loggedIn") != "") {
+                let str = `<a href="Choose Highlights.html" class="myButtonadd" id="btnEditP">
+                              Edit Preferences
+                          </a>`;
+                $("#ph1").html(str);
+            }
             $("#btnSignout").click(function () {
                 localStorage.removeItem("loggedIn");
             });
             $(".cuisine_btn").click(function () {
 
-                cusineId = this.id
-                ajaxCall("GET", "../api/businesses", "", getFSuccess, getFError);
+                cusineId = this.id;
+                if (localStorage.getItem("loggedIn") == "") {
+                    pr = 0;
+                    hlist = null;
+                }
+                else {
+                    customerIn = JSON.parse(localStorage.getItem("loggedIn"));
+                    pr = customerIn.PriceRange;
+                    if (customerIn.Chlist.length == 0)
+                        hlist = null;
+                    else
+                       hlist = customerIn.Chlist;
+                }
+                let api = "../api/businesses/" + cusineId + "/" + pr + "/" + hlist;
+                console.log(api);
+                ajaxCall("GET", api , "", getFSuccess, getFError);
             });
         });
 
-            function getFSuccess(data) {
-                console.log(cusineId);
-                console.log(data);
-                customerIn = JSON.parse(localStorage.getItem("loggedIn"));
-                if (customerIn.Chlist.length>0) {
-                    restaurantsByHArr = [];
-                    console.log(customerIn.Chlist);
-                    for (var i = 0; i < customerIn.Chlist.length; i++) {
-                        for (var j = 0; j < data.length; j++) {
-                          //  console.log(data[j].Highlights);
-                            if (data[j].Highlights.includes(customerIn.Chlist[i])) {
-                                restaurantsByHArr.push(data[j]);
-                               // if (!restaurantsByHArr.Contain(data[j])) { restaurantsByHArr.push(data[j])};
-                            }
-                        }
-                    }
-                }
-                else { restaurantsByHArr = data }
-                console.log(restaurantsByHArr);
-                if (customerIn.PriceRange != 0) {
-                    datafilteredByPR = restaurantsByHArr.filter((res) => res.PriceRange == customerIn.PriceRange);
-                    console.log(datafilteredByPR);
-                    datafiltered = datafilteredByPR.filter((res) => res.CuisineId == cusineId);
-                }
+            //function getFSuccess(data) {
+            //    console.log(cusineId);
+            //    console.log(data);
+            //    customerIn = JSON.parse(localStorage.getItem("loggedIn"));
+            //    if (customerIn.Chlist.length>0) {
+            //        restaurantsByHArr = [];
+            //        console.log(customerIn.Chlist);
+            //        for (var i = 0; i < customerIn.Chlist.length; i++) {
+            //            for (var j = 0; j < data.length; j++) {
+            //              //  console.log(data[j].Highlights);
+            //                if (data[j].Highlights.includes(customerIn.Chlist[i])) {
+            //                    restaurantsByHArr.push(data[j]);
+            //                   // if (!restaurantsByHArr.Contain(data[j])) { restaurantsByHArr.push(data[j])};
+            //                }
+            //            }
+            //        }
+            //    }
+            //    else { restaurantsByHArr = data }
+            //    console.log(restaurantsByHArr);
+            //    if (customerIn.PriceRange != 0) {
+            //        datafilteredByPR = restaurantsByHArr.filter((res) => res.PriceRange == customerIn.PriceRange);
+            //        console.log(datafilteredByPR);
+            //        datafiltered = datafilteredByPR.filter((res) => res.CuisineId == cusineId);
+            //    }
                 
-                else {
-                    datafiltered = restaurantsByHArr.filter((res) => res.CuisineId == cusineId);
+            //    else {
+            //        datafiltered = restaurantsByHArr.filter((res) => res.CuisineId == cusineId);
                    
-                }
-                console.log(datafiltered);
-                render(datafiltered);
-            }
+            //    }
+            //    console.log(datafiltered);
+            //    render(datafiltered);
+            //}
+
+        function getFSuccess(data) {
+            console.log(data);
+            render(data);
+        }
 
         function render(arr) {
 
@@ -113,6 +137,7 @@
         <a href="Login.html" class="btn btn-info btn-lg myButtonadd" id="btnSignout">
             <span class="glyphicon glyphicon-log-out"></span> Log out
         </a>
+        <div id="ph1"></div>
         <div>
             <br><h1>Choose cuisine in NYC</h1>
             <button id="1" class="myButton cuisine_btn">American</button>

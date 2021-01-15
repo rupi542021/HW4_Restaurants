@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Restaurants_tar4.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -16,14 +17,34 @@ namespace tar1.Models.DAL
         public SqlDataAdapter da;
         public DataTable dt;
 
-        public List<Businesses> getBusinesses()
+        public List<Businesses> getBusinesses(int cusineId, int pr, List<string> hlist)
         {
             SqlConnection con = null;
-            List<Businesses> fList = new List<Businesses>();
+            List<Businesses> rList = new List<Businesses>();
             try
             {
+                String selectSTR = "";
                 con = connect("DBConnectionString");
-                String selectSTR = "SELECT * FROM RestaurantsB_2021";
+                if (pr == 0 && hlist == null)
+                {
+                    selectSTR = "select * from[RestaurantsB_2021] where cusiId = " + cusineId;
+                }
+                else
+                {
+                    selectSTR = "select * from[RestaurantsB_2021] where cusiId =" + cusineId + "and priceRange=" + pr;
+                }
+                //else if (pr == 0 && hList != null)
+                //{
+                //    String selectSTR = "";
+                //    foreach (var h in hList)
+                //    {
+                //        selectSTR += "select * from [RestaurantsB_2021] inner join " +
+                //       "[HighlightInRestB_2021] on[RestaurantsB_2021].id =[HighlightInRestB_2021].resId " +
+                //       "where[HighlightInRestB_2021].highlight ="+ h +"and[RestaurantsB_2021].cusiId =" + cusineId + " ";
+                //    }
+                   
+                //}
+                // String selectSTR = "SELECT * FROM RestaurantsB_2021";
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
 
                 SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); 
@@ -41,9 +62,9 @@ namespace tar1.Models.DAL
                     favourite.CuisineId = Convert.ToInt32(dr["cusiId"]);
                     int id = Convert.ToInt32(dr["id"]);
                     favourite.Highlights = getRestHighlights(id);
-                    fList.Add(favourite);
+                    rList.Add(favourite);
                 }
-                return fList;
+                return rList;
             }
             catch (Exception ex)
             {
@@ -347,6 +368,54 @@ namespace tar1.Models.DAL
             return command;
         }
 
+        public int UpdateCustomerHighlights(Customer cust)
+        {
+            SqlConnection con;
+            SqlCommand cmd;
+            try
+            {
+                con = connect("DBConnectionString"); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            string cStr = BuildInsertCommand2(cust); // helper method to build the insert string
+            cmd = CreateCommand(cStr, con); // create the command
+            try
+            {
+                int numEffected = cmd.ExecuteNonQuery(); // execute the command
+                return numEffected;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    // close the db connection
+                    con.Close();
+                }
+            }
+        }
+
+        private string BuildInsertCommand2(Customer cust)
+        {
+            String command = "";
+
+            foreach (var ch in cust.Chlist)
+            {
+                String prefix = "UPDATE [CustHighlightsB_2021] SET highlight ='"+ch+"'WHERE custID = cust.id; " + ch + "') ";
+                command += prefix;
+            }
+            return command;
+        }
+
+
         public int InsertHighlight(Businesses highlight)
         {
             SqlConnection con;
@@ -405,7 +474,87 @@ namespace tar1.Models.DAL
             }
             return command;
         }
+        public List<Campaign> getCampaigns()
+        {
+            SqlConnection con = null;
+            List<Campaign> campList = new List<Campaign>();
+            try
+            {
 
+                con = connect("DBConnectionString");
+
+                string selectSTR = "select * from [CampaignsB_2021]";
+
+                SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                while (dr.Read())
+                {
+                    Campaign camp = new Campaign();
+                    camp.ResID = Convert.ToInt32(dr["resid"]);
+                    camp.ResName = (string)dr["resName"];
+                    camp.Budget = (float)Convert.ToDouble(dr["budget"]);
+                    camp.Clicks = Convert.ToInt32(dr["clicks"]);
+                    camp.Views = Convert.ToInt32(dr["views"]);
+                    camp.Status = Convert.ToInt32(dr["status"]);
+                    campList.Add(camp);
+                }
+                return campList;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+            }
+        }
+
+        public int UpdateCampaign(Campaign camp)
+        {
+            SqlConnection con;
+            SqlCommand cmd;
+            try
+            {
+                con = connect("DBConnectionString");
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+            string cStr = BuildInsertCommand3(camp);
+            cmd = CreateCommand(cStr, con);
+            try
+            {
+                int numEffected = cmd.ExecuteNonQuery(); // execute the command
+                return numEffected;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    // close the db connection
+                    con.Close();
+                }
+            }
+        }
+
+        private string BuildInsertCommand3(Campaign camp)
+        {
+            String prefix = "UPDATE [CampaignsB_2021] SET budget ="+ camp.Budget + "WHERE resid =" + camp.ResID;
+            return prefix;
+        }
     }
+
 }
 

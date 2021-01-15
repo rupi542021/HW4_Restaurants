@@ -17,14 +17,44 @@
 
         $(document).ready(function () {
             hArr = ["Wifi", "Serves Alcohol", "Breakfast", "Dinner", "Lunch", "Vegetarian Friendly", "Takeaway Available", "Credit Card", "Delivery", "Cash"];
-            renderHighlights(hArr);
-            customerHighlight = [];
-            customerParse = JSON.parse(localStorage.getItem("customer"));
-            console.log(customerParse);
+            if (localStorage.getItem("loggedIn") == "") {
+                customerHighlight = [];
+                customerParse = JSON.parse(localStorage.getItem("customer"));
+                console.log(customerParse);
+                renderAllHighlights(hArr);         
+               
+            }
+            else {
+                customerIn = JSON.parse(localStorage.getItem("loggedIn"));
+                customerHighlight = customerIn.Chlist;
+                renderUserHighlights(hArr);
+            }
+           
             
         });
 
-        function renderHighlights(hArr) {
+        function renderUserHighlights(hArr) {
+            customerIn = JSON.parse(localStorage.getItem("loggedIn"));
+            console.log(customerIn);
+            let chlist = customerIn.Chlist;
+            
+            let str = "";
+            for (var i = 0; i < hArr.length; i++) {
+                if (chlist.includes(hArr[i])) {
+                    str += `<input type="checkbox" id='` + hArr[i] + `' value='` + hArr[i] + `' checked onchange='cbxHighlight(this)'>
+                       <label>`+ hArr[i] + `</label><br>`
+                }
+                    else {
+                        str += `<input type="checkbox" id='` + hArr[i] + `' value='` + hArr[i] + `'onchange='cbxHighlight(this)'>
+                       <label>`+ hArr[i] + `</label><br>`
+                    }
+                }
+
+            
+            document.getElementById("highlightsDIV").innerHTML = str;
+        }
+
+        function renderAllHighlights(hArr) {
             let str = "";
 
             for (var i = 0; i < hArr.length; i++) {
@@ -48,14 +78,23 @@
         }
 
         btnPostHighlight = () => {
-            customerParse.ChList = customerHighlight;        
-            console.log(customerParse);
-            ajaxCall("POST", "../api/businesses/cusTomer", JSON.stringify(customerParse), postSuccess, postError);
+            if (localStorage.getItem("loggedIn") == "") {
+                customerParse.ChList = customerHighlight;
+                console.log(customerParse);
+                ajaxCall("POST", "../api/businesses/cusTomer", JSON.stringify(customerParse), postSuccess, postError);
+            }
 
+            else {
+                customerIn = JSON.parse(localStorage.getItem("loggedIn"));
+                customerIn.ChList = customerHighlight;
+                ajaxCall("PUT", "../api/businesses/", JSON.stringify(customerIn), putSuccess, putError);
+            }
         }
 
         function postSuccess(data) {
-            swal("Your Details Added Successfuly!", "Thank you :)", "success");
+            console.log(data);
+            localStorage.setItem("loggedIn", JSON.stringify(data));
+            swal("Your Details Added Successfuly!", "Thank you :)", "success").then(function () { window.location.href = 'Favorites.html' });;
         }
 
         function postError(err) {
