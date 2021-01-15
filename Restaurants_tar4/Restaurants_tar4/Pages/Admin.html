@@ -2,39 +2,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-
-    <title>DataTable Example</title>
-
+    <title></title>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
-
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
-
+    <script src="../Scripts/jquery-3.4.1.min.js"></script>
+    <script src="../Scripts/bootstrap.min.js"></script>
     <style type="text/css">
-
         button {
             margin-left: 10px;
         }
     </style>
-
-
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
-    <script src="../Scripts/ajaxCallsStub.js"></script>
-
+    <script src="../Scripts/ajaxCalls.js"></script>
 
     <script>
 
-        // will run when the document is ready
         $(document).ready(function () {
 
             // once the document is ready we fetch a list of cars from the server
@@ -46,20 +37,19 @@
 
         // wire all the buttons to their functions
         function buttonEvents() {
-
             $(document).on("click", ".editBtn", function () {
                 markSelected(this);
                 $("#editDiv").show();
                 $("#editDiv :input").prop("disabled", false); // edit mode: enable all controls in the form
-                populateFields(this.getAttribute('data-carId')); // fill the form fields according to the selected row
+                populateFields(this.getAttribute('data-campId')); // fill the form fields according to the selected row
             });
 
-            $(document).on("click", ".viewBtn", function () {
-                markSelected(this);
-                $("#editDiv").show();
-                $("#editDiv :input").attr("disabled", "disabled"); // view mode: disable all controls in the form
-                populateFields(this.getAttribute('data-carId'));
-            });
+            //$(document).on("click", ".viewBtn", function () {
+            //    markSelected(this);
+            //    $("#editDiv").show();
+            //    $("#editDiv :input").attr("disabled", "disabled"); // view mode: disable all controls in the form
+            //    populateFields(this.getAttribute('data-campId'));
+            //});
 
             $(document).on("click", ".deleteBtn", function () {
                 markSelected(this);
@@ -80,7 +70,7 @@
 
         // mark the selected row
         function markSelected(btn) {
-            $("#carsTable tr").removeClass("selected"); // remove seleced class from rows that were selected before
+            $("#campaignTable tr").removeClass("selected"); // remove seleced class from rows that were selected before
             row = (btn.parentNode).parentNode; // button is in TD which is in Row
             row.className = 'selected'; // mark as selected
         }
@@ -92,46 +82,38 @@
 
         function onSubmitFunc() {
             let CampaignAfterEdit = {
-                ResID: camp.Id,
-                ResName: camp.Name, 
+                ResID: campaign.ResID,
+                ResName: campaign.ResName,
                 Budget: $("#budget").val(),
-                Clicks: camp.Clicks,
-                Views: camp.Views,
-                Status: camp.Status
+                Clicks: campaign.Clicks,
+                Views: campaign.Views,
+                Status: campaign.Status
             }
-
+            //console.log("CampaignAfterEdit", CampaignAfterEdit);
             // update a new Car record to the server
-            ajaxCall("PUT", "../api/Campaigns", JSON.stringify(CampaignAfterEdit), updateSuccess, error);
+            ajaxCall("PUT", "../api/Campaigns", JSON.stringify(CampaignAfterEdit), updateSuccess, getError);
             return false;
         }
 
         // fill the form fields
-        function populateFields(carId) {
-            car = getCar(carId);
-            $("#manufacturer").val(car.Manufacturer);
-            $("#model").val(car.Model);
-            $("#year").val(car.Year);
-            $("#price").val(car.Price);
-            $("#color").val(car.Color);
-            $("#hand").val(car.Hand);
-            $("#description").val(car.Description);
-            $("#automatic").prop('checked', car.Automatic);
-            $("#image").attr("src", "images/" + car.Image);
+        function populateFields(campId) {
+            campaign = getCampaign(campId);
         }
 
         // get a car according to its Id
-        function getCar(id) {
-            for (i in cars) {
-                if (cars[i].Id == id)
-                    return cars[i];
+        function getCampaign(id) {
+            for (c in AllCampaigns) {
+                if (AllCampaigns[c].ResID == id)
+                    return AllCampaigns[c];
             }
             return null;
         }
 
         // success callback function after update
-        function updateSuccess(carsdata) {
+        function updateSuccess(campsdata) {
+            //console.log("aftreUpdate", campsdata);
             tbl.clear();
-            redrawTable(tbl, carsdata);
+            redrawTable(tbl, campsdata);
             buttonEvents();
             $("#editDiv").hide();
             swal("Updated Successfuly!", "Great Job", "success");
@@ -157,23 +139,24 @@
 
         // this function is activated in case of a success
         function getSuccess(campsdata) {
-            camps = campsdata; // keep the cars array in a global variable;
+            AllCampaigns = campsdata; // keep the cars array in a global variable;
+            console.log(AllCampaigns);
             try {
                 tbl = $('#campaignTable').DataTable({
-                    data: campsdata,
+                    data: AllCampaigns,
                     pageLength: 5,
                     columns: [
                         {
                             render: function (data, type, row, meta) {
-                                let dataCamp = "data-campId='" + row.Id + "'";
+                                let dataCamp = "data-campId='" + row.ResID + "'";
 
-                                editBtn = "<button type='button' class = 'editBtn btn btn-success' " + dataCamp + "> Edit </button>";                 
+                                editBtn = "<button type='button' class = 'editBtn btn btn-success' " + dataCamp + "> Edit </button>";
                                 deleteBtn = "<button type='button' class = 'deleteBtn btn btn-danger' " + dataCamp + "> Delete </button>";
                                 return editBtn + deleteBtn;
                             }
                         },
-                        { data: "Id" },
-                        { data: "Name" },
+                        { data: "ResID" },
+                        { data: "ResName" },
                         { data: "Budget" },
                         { data: "Balance" },
                         { data: "Clicks" },
@@ -212,8 +195,8 @@
                 <thead>
                     <tr>
                         <th></th>
-                        <th>Id</th>
-                        <th>Name</th>
+                        <th>Restaurant Id</th>
+                        <th>Restaurant Name</th>
                         <th>Budget</th>
                         <th>Balance</th>
                         <th>Clicks</th>

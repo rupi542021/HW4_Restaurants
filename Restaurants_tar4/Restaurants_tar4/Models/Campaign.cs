@@ -47,11 +47,12 @@ namespace Restaurants_tar4.Models
             return c;
         }
 
-        public void Update()
+        public List<Campaign> Update()
         {
             GetNewBalance(this);
             DBServices dbs = new DBServices();
             dbs.UpdateCampaign(this);
+            return dbs.getCampaigns();
         }
 
         public void GetNewBalance(Campaign camp) {

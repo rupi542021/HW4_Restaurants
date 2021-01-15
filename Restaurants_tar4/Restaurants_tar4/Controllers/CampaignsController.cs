@@ -29,12 +29,12 @@ namespace Restaurants_tar4.Controllers
         }
 
         // PUT api/<controller>/5
-        public HttpResponseMessage Put(int id, [FromBody] Campaign camp)
+        public HttpResponseMessage Put([FromBody] Campaign camp)
         {
             try
             {
-                camp.Update();
-                return Request.CreateResponse(HttpStatusCode.OK, "");
+                List<Campaign> campList = camp.Update();
+                return Request.CreateResponse(HttpStatusCode.OK, campList);
             }
 
             catch
