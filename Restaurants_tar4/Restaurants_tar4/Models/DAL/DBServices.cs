@@ -128,14 +128,14 @@ namespace tar1.Models.DAL
                 {
                     if (email == (string)dr["email"] && pass == (string)dr["password"])
                     {
+                        c.Id = Convert.ToInt32(dr["id"]);
                         c.Name = (string)dr["name"];
                         c.Lastname = (string)dr["fname"];
                         c.Email = (string)dr["email"];
                         c.Phone = (string)dr["phone"];
                         c.Password = (string)dr["password"];
                         c.PriceRange = Convert.ToInt32(dr["price_range"]);
-                        int id = Convert.ToInt32(dr["id"]);
-                        c.Chlist =getCustomerHighlights(id);
+                        c.Chlist =getCustomerHighlights(c.Id);
                         return c;
                     }
                 }
@@ -406,10 +406,12 @@ namespace tar1.Models.DAL
         private string BuildInsertCommand2(Customer cust)
         {
             String command = "";
-
+            String prefix = "DELETE FROM [CustHighlightsB_2021] WHERE custID = " + cust.Id +
+                " update [CustomersB_2021] set price_range="+cust.PriceRange+" where id=" + cust.Id;
             foreach (var ch in cust.Chlist)
             {
-                String prefix = "UPDATE [CustHighlightsB_2021] SET highlight ='"+ch+"'WHERE custID = cust.id; " + ch + "') ";
+                
+                prefix += "INSERT INTO [CustHighlightsB_2021] ([custID], [highlight]) values("+cust.Id+",'" + ch + "') ";
                 command += prefix;
             }
             return command;
@@ -497,6 +499,7 @@ namespace tar1.Models.DAL
                     camp.Clicks = Convert.ToInt32(dr["clicks"]);
                     camp.Views = Convert.ToInt32(dr["views"]);
                     camp.Status = Convert.ToInt32(dr["status"]);
+                    camp.Balance = camp.Budget - (float)(camp.Clicks * 0.5 + camp.Views * 0.1);
                     campList.Add(camp);
                 }
                 return campList;

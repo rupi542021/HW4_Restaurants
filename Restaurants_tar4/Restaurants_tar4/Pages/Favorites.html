@@ -15,8 +15,8 @@
     <script>
         $(document).ready(function () {
             if (localStorage.getItem("loggedIn") != "") {
-                let str = `<a href="Choose Highlights.html" class="myButtonadd" id="btnEditP">
-                              Edit Preferences
+                let str = `<a href="Choose Highlights.html" class="btn btn-info btn-lg myButtonadd" id="btnEditP">
+                            <span class="glyphicon glyphicon-pencil"></span> Edit Preferences                               
                           </a>`;
                 $("#ph1").html(str);
             }

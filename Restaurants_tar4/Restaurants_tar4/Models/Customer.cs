@@ -8,6 +8,7 @@ namespace tar2.Models
 {
     public class Customer
     {
+        int id;
         string name;
         string lastname;
         string email;
@@ -21,8 +22,9 @@ namespace tar2.Models
 
         public Customer() { }
 
-        public Customer(string name, string lastname, string email, string phone, string password, string img, int priceRange, List<string> chlist)
+        public Customer(int id,string name, string lastname, string email, string phone, string password, string img, int priceRange, List<string> chlist)
         {
+            Id = id;
             Name = name;
             Lastname = lastname;
             Email = email;
@@ -32,7 +34,7 @@ namespace tar2.Models
             PriceRange = priceRange;
             Chlist = chlist;
         }
-
+        public int Id { get => id; set => id = value; }
         public string Name { get => name; set => name = value; }
         public string Lastname { get => lastname; set => lastname = value; }
         public string Email { get => email; set => email = value; }

@@ -219,6 +219,7 @@
     <Content Include="Pages\katarina-sikuljak-BeEnOzyIBsU-unsplash.jpg" />
     <Content Include="Pages\Login.html" />
     <Content Include="Pages\StyleSheet.css" />
+    <Content Include="Pages\StyleSheetAdmin.css" />
     <Content Include="Scripts\ajaxCalls.js" />
     <Content Include="Scripts\ajaxCallsStub.js" />
     <Content Include="Scripts\ajaxCallsWithKey.js" />

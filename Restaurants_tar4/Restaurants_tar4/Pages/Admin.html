@@ -10,7 +10,8 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
     <script src="../Scripts/jquery-3.4.1.min.js"></script>
-    <script src="../Scripts/bootstrap.min.js"></script>
+
+    <link href="StyleSheetAdmin.css" rel="stylesheet" />
     <style type="text/css">
         button {
             margin-left: 10px;
@@ -27,15 +28,12 @@
     <script>
 
         $(document).ready(function () {
-
-            // once the document is ready we fetch a list of cars from the server
             ajaxCall("GET", "../api/Campaigns", "", getSuccess, getError);
-            $("#campaignsForm").submit(onSubmitFunc); // wire the submit event to a function called f1
+            $("#campaignsForm").submit(onSubmitFunc);
             $("#editDiv").hide();
             buttonEvents();
         });
 
-        // wire all the buttons to their functions
         function buttonEvents() {
             $(document).on("click", ".editBtn", function () {
                 markSelected(this);
@@ -89,18 +87,14 @@
                 Views: campaign.Views,
                 Status: campaign.Status
             }
-            //console.log("CampaignAfterEdit", CampaignAfterEdit);
-            // update a new Car record to the server
             ajaxCall("PUT", "../api/Campaigns", JSON.stringify(CampaignAfterEdit), updateSuccess, getError);
             return false;
         }
 
-        // fill the form fields
         function populateFields(campId) {
             campaign = getCampaign(campId);
         }
 
-        // get a car according to its Id
         function getCampaign(id) {
             for (c in AllCampaigns) {
                 if (AllCampaigns[c].ResID == id)
@@ -184,7 +178,7 @@
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="#">Car DataTable Example</a>
+                <a class="navbar-brand" href="#">Campaigns DataTable</a>
             </div>
         </div>
     </nav>

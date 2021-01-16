@@ -114,6 +114,9 @@ select {
 .btn-lg.myButtonadd {
     float: right;
 }
+#btnEditP {
+    float: left;
+}
 
 select:hover {
     background-image: linear-gradient(var(--accentFg), var(--accentFg)), linear-gradient(-135deg, transparent 50%, var(--accentFg) 50%), linear-gradient(-225deg, transparent 50%, var(--accentFg) 50%), linear-gradient(var(--accentFg) 42%, var(--accentBg) 42%);
