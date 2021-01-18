@@ -118,7 +118,8 @@
                 for (var i = 0; i < arr.length; i++) {
                     str += `<tr>`
                     if (arr[i].Image == "") {
-                        str += `<td><img src="default.jpg"/></td> `
+                        str += `<td><a href = "` + arr[i].Url + `" >
+                                <img src="default.jpg"></a></td>`
                     }
                     else {
                         str += `<td><a href = "` + arr[i].Url + `" >
