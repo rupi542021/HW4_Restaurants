@@ -54,9 +54,20 @@ namespace Restaurants_tar4.Models
             dbs.UpdateCampaign(this);
             return dbs.getCampaigns();
         }
-
+        public List<Campaign> Insert()
+        {
+            DBServices dbs = new DBServices();
+            dbs.CreateCampaign(this);
+            return dbs.getCampaigns();
+        }
         public void GetNewBalance(Campaign camp) {
             camp.Balance = camp.Budget - (float)(camp.Clicks * 0.5 + camp.Views * 0.1);       
+        }
+        public List<Campaign> DeleteCamp(int id)
+        {
+            DBServices dbs = new DBServices();
+            dbs.DeleteCamp(id);
+            return dbs.getCampaigns();
         }
     }
 }

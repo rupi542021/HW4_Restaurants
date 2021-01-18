@@ -60,6 +60,7 @@ namespace tar1.Models.DAL
                     favourite.Phone = (string)dr["phone"];
                     favourite.Address = (string)dr["address"];
                     favourite.CuisineId = Convert.ToInt32(dr["cusiId"]);
+                    favourite.Url= (string)dr["url"];
                     int id = Convert.ToInt32(dr["id"]);
                     favourite.Highlights = getRestHighlights(id);
                     rList.Add(favourite);
@@ -76,6 +77,48 @@ namespace tar1.Models.DAL
                 if (con != null)
                 { 
                 con.Close();
+                }
+            }
+        }
+        public List<Businesses> getAllBusinesses()
+        {
+            SqlConnection con = null;
+            List<Businesses> rList = new List<Businesses>();
+            try
+            {
+                con = connect("DBConnectionString");
+                String selectSTR = "select * from[RestaurantsB_2021] order by name";
+                SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                while (dr.Read())
+                {
+                    Businesses favourite = new Businesses();
+                    favourite.Id = Convert.ToInt32(dr["id"]);
+                    favourite.Image = (string)dr["image"];
+                    favourite.Name = (string)dr["name"];
+                    favourite.Reating = (float)Convert.ToDouble(dr["reating"]);
+                    favourite.Category = (string)dr["category"];
+                    favourite.PriceRange = Convert.ToInt32(dr["priceRange"]);
+                    favourite.Phone = (string)dr["phone"];
+                    favourite.Address = (string)dr["address"];
+                    favourite.CuisineId = Convert.ToInt32(dr["cusiId"]);
+                    int id = Convert.ToInt32(dr["id"]);
+                    favourite.Highlights = getRestHighlights(id);
+                    rList.Add(favourite);
+                }
+                return rList;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
                 }
             }
         }
@@ -313,6 +356,53 @@ namespace tar1.Models.DAL
             command = prefix + sb.ToString();
             return command;
         }
+        public int CreateCampaign(Campaign camp)
+        {
+            SqlConnection con;
+            SqlCommand cmd;
+            try
+            {
+                con = connect("DBConnectionString"); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            string cStr = BuildInsertCommand1(camp); // helper method to build the insert string
+            cmd = CreateCommand(cStr, con); // create the command
+            try
+            {
+                int numEffected = cmd.ExecuteNonQuery(); // execute the command
+                return numEffected;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    // close the db connection
+                    con.Close();
+                }
+            }
+        }
+
+        private string BuildInsertCommand1(Campaign camp)
+        {
+            String command;
+            StringBuilder sb = new StringBuilder();
+            // use a string builder to create the dynamic string
+
+            sb.AppendFormat("Values('{0}','{1}','{2}','{3}','{4}','{5}')", camp.ResID, camp.ResName, camp.Budget, camp.Clicks, camp.Views, camp.Status);
+
+            String prefix = "INSERT INTO [CampaignsB_2021]" + "([resid],[resName],[budget],[clicks],[views],[status])";
+            command = prefix + sb.ToString();
+            return command;
+        }
 
         public int InsertCustomerHighlights(Customer cust)
         {
@@ -416,6 +506,46 @@ namespace tar1.Models.DAL
             }
             return command;
         }
+        public int DeleteCamp(int id)
+        {
+            SqlConnection con;
+            SqlCommand cmd;
+            try
+            {
+                con = connect("DBConnectionString"); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            string cStr = BuildDeleteCommand(id); // helper method to build the insert string
+            cmd = CreateCommand(cStr, con); // create the command
+            try
+            {
+                int numEffected = cmd.ExecuteNonQuery(); // execute the command
+                return numEffected;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    // close the db connection
+                    con.Close();
+                }
+            }
+        }
+
+        private string BuildDeleteCommand(int id)
+        {
+            String prefix = "DELETE FROM [CampaignsB_2021] WHERE resid = " + id;
+            return prefix;
+        }
 
 
         public int InsertHighlight(Businesses highlight)
@@ -503,6 +633,53 @@ namespace tar1.Models.DAL
                     campList.Add(camp);
                 }
                 return campList;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+            }
+        }
+        public List<Businesses> getRestCampaigns()
+        {
+            SqlConnection con = null;
+            List<Businesses> rList = new List<Businesses>();
+            try
+            {
+                con = connect("DBConnectionString");
+
+                string selectSTR = "select [id],[image],[name],[reating],[category],[priceRange],[phone],[address],[cusiId],[url]" +
+                                    " from [dbo].[RestaurantsB_2021] r inner join [dbo].[CampaignsB_2021] c"+
+                                    " on c.resid=r.id";
+    
+                SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                while (dr.Read())
+                {
+                    Businesses favourite = new Businesses();
+                    favourite.Id = Convert.ToInt32(dr["id"]);
+                    favourite.Image = (string)dr["image"];
+                    favourite.Name = (string)dr["name"];
+                    favourite.Reating = (float)Convert.ToDouble(dr["reating"]);
+                    favourite.Category = (string)dr["category"];
+                    favourite.PriceRange = Convert.ToInt32(dr["priceRange"]);
+                    favourite.Phone = (string)dr["phone"];
+                    favourite.Address = (string)dr["address"];
+                    favourite.CuisineId = Convert.ToInt32(dr["cusiId"]);
+                    favourite.Url = (string)dr["url"];
+                    int id = Convert.ToInt32(dr["id"]);
+                    favourite.Highlights = getRestHighlights(id);
+                    rList.Add(favourite);
+                }
+                return rList;
             }
             catch (Exception ex)
             {

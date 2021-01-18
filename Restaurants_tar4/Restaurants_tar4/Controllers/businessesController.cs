@@ -16,14 +16,21 @@ namespace tar1.Controllers
 {
     public class businessesController : ApiController
     {
-        // GET api/<controller>
-        //public List<Businesses> Get()
-        //{
-        //    Businesses favourite = new Businesses();
-        //    //List<Businesses> favourites = favourite.Read();
-        //    //return favourite.Read();
-        //    return null;
-        //}
+        //GET api/<controller>
+        public List<Businesses> Get()
+        {
+            Businesses restaurant = new Businesses();
+            //List<Businesses> favourites = favourite.Read();
+            return restaurant.ReadAll();
+        }
+        [HttpGet]
+        [Route("api/businesses/getRestCamp")]
+        public List<Businesses> GetByCamp()
+        {
+            Businesses restcamp = new Businesses();
+            return restcamp.ReadByCamp();
+        }
+
         [HttpGet]
         [Route("api/businesses/{cusineId}/{pr}/{hlist}")]
         public List<Businesses> Get(int cusineId, int pr, List<string> hlist)

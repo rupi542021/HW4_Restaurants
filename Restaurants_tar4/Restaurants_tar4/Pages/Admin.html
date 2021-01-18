@@ -12,11 +12,7 @@
     <script src="../Scripts/jquery-3.4.1.min.js"></script>
 
     <link href="StyleSheetAdmin.css" rel="stylesheet" />
-    <style type="text/css">
-        button {
-            margin-left: 10px;
-        }
-    </style>
+
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
@@ -24,16 +20,34 @@
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="../Scripts/ajaxCalls.js"></script>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <script>
 
         $(document).ready(function () {
             ajaxCall("GET", "../api/Campaigns", "", getSuccess, getError);
+            ajaxCall("GET", "../api/businesses", "", getRestSuccess, getRestError);
             $("#campaignsForm").submit(onSubmitFunc);
+            $("#campaignsFormCreate").submit(onSubmitFuncCreate);
             $("#editDiv").hide();
+            $("#createDiv").hide();
+
             buttonEvents();
         });
+        function getRestSuccess(AllRest) {
+            console.log(AllRest);
+            let str = `<select name="campaing" id="campaing"><option value="0">Choose</option>`; 
+            for (var i = 0; i < AllRest.length; i++) {
+                str += "<option value=" + AllRest[i].Id +">"+AllRest[i].Name+"</option>"
+            }
+            str += `</select>`;
 
+            $("#selectRest").html(str);
+        }
+
+        function getRestError(err) {
+            console.log(err);
+        }
         function buttonEvents() {
             $(document).on("click", ".editBtn", function () {
                 markSelected(this);
@@ -41,17 +55,15 @@
                 $("#editDiv :input").prop("disabled", false); // edit mode: enable all controls in the form
                 populateFields(this.getAttribute('data-campId')); // fill the form fields according to the selected row
             });
+            $(document).on("click", ".plusBtn", function () {
+                $("#pForm").hide();
+                $("#createDiv").show();
+            });
 
-            //$(document).on("click", ".viewBtn", function () {
-            //    markSelected(this);
-            //    $("#editDiv").show();
-            //    $("#editDiv :input").attr("disabled", "disabled"); // view mode: disable all controls in the form
-            //    populateFields(this.getAttribute('data-campId'));
-            //});
 
             $(document).on("click", ".deleteBtn", function () {
                 markSelected(this);
-                var carId = this.getAttribute('data-carId');
+                var campId = this.getAttribute('data-campId');
                 swal({ // this will open a dialouge
                     title: "Are you sure ??",
                     text: "",
@@ -60,7 +72,7 @@
                     dangerMode: true
                 })
                     .then(function (willDelete) {
-                        if (willDelete) DeleteCar(carId);
+                        if (willDelete) DeleteCamp(campId);
                         else swal("Not Deleted!");
                     });
             });
@@ -74,10 +86,12 @@
         }
 
         // Delete a car from the server
-        function DeleteCar(id) {
-            ajaxCall("DELETE", "../api/cars/" + id, "", deleteSuccess, error);
+        function DeleteCamp(id) {
+            ajaxCall("DELETE", "../api/Campaigns/" + id, "", deleteSuccess, deleteError);
         }
-
+        function deleteError(err) {
+            console.log(err);
+        }
         function onSubmitFunc() {
             let CampaignAfterEdit = {
                 ResID: campaign.ResID,
@@ -87,10 +101,37 @@
                 Views: campaign.Views,
                 Status: campaign.Status
             }
-            ajaxCall("PUT", "../api/Campaigns", JSON.stringify(CampaignAfterEdit), updateSuccess, getError);
+            ajaxCall("PUT", "../api/Campaigns", JSON.stringify(CampaignAfterEdit), updateSuccess, updateError );
             return false;
         }
+        function onSubmitFuncCreate() {
+            let CampaignAfterEdit = {
+                ResID: $("#campaing").val(),
+                ResName: $("#campaing option:selected").text(),
+                Budget: $("#budgetCreate").val(),
+                Clicks: 0,
+                Views: 0,
+                Status: 1,
+                Balance: $("#budgetCreate").val()
+            }
+            console.log(CampaignAfterEdit)
+            ajaxCall("POST", "../api/Campaigns", JSON.stringify(CampaignAfterEdit), postSuccess, postError);
+            return false;
+        }
+        function postSuccess(campsdata) {
+            console.log(campsdata);
+            $("#createDiv").hide();
+            $("#pForm").show();
 
+            tbl.clear();
+            redrawTable(tbl, campsdata);
+            buttonEvents();
+            $("#editDiv").hide();
+            swal("The Campaign Created Successfuly!", "Great Job", "success");
+        }
+        function postError(err) {
+            console.log(err)
+        }
         function populateFields(campId) {
             campaign = getCampaign(campId);
         }
@@ -112,12 +153,15 @@
             $("#editDiv").hide();
             swal("Updated Successfuly!", "Great Job", "success");
         }
+        function updateError(err){
+            swal("Error: update failed");
+        }
 
         // success callback function after delete
-        function deleteSuccess(carsdata) {
+        function deleteSuccess(campsdata) {
             tbl.clear();
-            redrawTable(tbl, carsdata);
-            buttonEvents(); // after redrawing the table, we must wire the new buttons
+            redrawTable(tbl, campsdata);
+            buttonEvents();
             $("#editDiv").hide();
             swal("Deleted Successfuly!", "Great Job", "success");
         }
@@ -169,7 +213,6 @@
         function getError(err) {
             swal("Error: " + err);
         }
-
     </script>
 
 </head>
@@ -178,12 +221,14 @@
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="#">Campaigns DataTable</a>
+                <a class="navbar-brand" href="#">Campaigns DataTable - Admin</a>
             </div>
         </div>
     </nav>
 
     <div class="container">
+        <h5><b>Create New </b></h5>
+        <button class="w3-button w3-circle w3-black plusBtn">+</button>
         <form id="pForm">
             <table id="campaignTable" class="display nowrap" style="width:100%">
                 <thead>
@@ -198,29 +243,39 @@
                     </tr>
                 </thead>
             </table>
-
         </form>
 
         <div id="editDiv">
             <form id="campaignsForm">
-                <div class="form-group row">
-
+                <br />
+                <div class="form-group row" id="editForm">
+                    <h4>Edit campaign budget:</h4>
                     <div class="form-group col-sm-3">
                         <label for="budget"><span class="red-star">★ </span>Budget</label>
                         <input type="text" class="form-control" id="budget" placeholder="Enter the budget" required>
                     </div>
-
+                    <button type="submit" class="btn btn-primary btn-md" id="saveBTN">Save</button>
                 </div>
-
-                <button type="submit" class="btn btn-primary btn-lg" id="saveBTN">Save</button>
-
             </form>
         </div>
 
+        <div id="createDiv">
+            <form id="campaignsFormCreate">
+                <br />
+                <div class="form-group row" id="CreateForm">
+                    <h4>Create New campaign:</h4>
+                    <div class="form-group col-sm-3">
+                        <label for="budget"><span class="red-star">★ </span>Select a Restaurant</label>
+                        <div id="selectRest"></div>
+                    </div>
+                    <div class="form-group col-sm-3">
+                        <label for="budget"><span class="red-star">★ </span>Budget</label>
+                        <input type="text" class="form-control" id="budgetCreate" placeholder="Enter the budget" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-md" id="CreateBTN">Create</button>
+                </div>
+            </form>
+        </div>
     </div>
-
-
-
-
 </body>
 </html>

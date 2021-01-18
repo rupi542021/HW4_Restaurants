@@ -62,14 +62,19 @@ namespace tar1.Models
             dbs.InsertHighlight(this);
         }
 
+        public List<Businesses> ReadByCamp()
+        {
+            DBServices dbs = new DBServices();
+            List<Businesses> restc = dbs.getRestCampaigns();
+            return restc;
+        }
 
-
-        //    public List<Businesses> Read()
-        //{
-        //    DBServices dbs = new DBServices();
-        //    List<Businesses> b = dbs.getBusinesses();
-        //    return b;
-        //}
+        public List<Businesses> ReadAll()
+        {
+            DBServices dbs = new DBServices();
+            List<Businesses> b = dbs.getAllBusinesses();
+            return b;
+        }
 
         public List<Businesses> Read(int cusineId, int pr, List<string> hlist)
         {

@@ -10,25 +10,13 @@ namespace Restaurants_tar4.Controllers
 {
     public class CampaignsController : ApiController
     {
-        // GET api/<controller>
         public List<Campaign> Get()
         {
             Campaign camp = new Campaign();
             return camp.Read(); 
         }
 
-        // GET api/<controller>/5
-        public string Get(int id)
-        {
-            return "value";
-        }
 
-        // POST api/<controller>
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<controller>/5
         public HttpResponseMessage Put([FromBody] Campaign camp)
         {
             try
@@ -43,10 +31,37 @@ namespace Restaurants_tar4.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "connecting error");
             }
         }
-
-        // DELETE api/<controller>/5
-        public void Delete(int id)
+        public HttpResponseMessage Post([FromBody] Campaign camp)
         {
+            try
+            {
+                List<Campaign> campList1 = camp.Insert();
+                return Request.CreateResponse(HttpStatusCode.OK, campList1);
+            }
+
+            catch
+            {
+
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "connecting error");
+            }
+        }
+
+        [HttpDelete]
+        [Route("api/Campaigns/{id}")]
+        public HttpResponseMessage Delete(int id)
+        {
+            try
+            {
+                Campaign camp = new Campaign();
+                List<Campaign> campList = camp.DeleteCamp(id);
+                return Request.CreateResponse(HttpStatusCode.OK, campList);
+            }
+
+            catch
+            {
+
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "connecting error");
+            }
         }
     }
 }

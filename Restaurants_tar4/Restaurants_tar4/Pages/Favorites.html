@@ -24,7 +24,7 @@
                 localStorage.removeItem("loggedIn");
             });
             $(".cuisine_btn").click(function () {
-
+                ajaxCall("GET", "../api/businesses/getRestCamp", "", getCampSuccess, getCampError);
                 cusineId = this.id;
                 if (localStorage.getItem("loggedIn") == "") {
                     pr = 0;
@@ -38,12 +38,21 @@
                     else
                        hlist = customerIn.Chlist;
                 }
-                let api = "../api/businesses/" + cusineId + "/" + pr + "/" + hlist;
-                console.log(api);
-                ajaxCall("GET", api , "", getFSuccess, getFError);
+
+                
             });
         });
-
+        function getCampSuccess(camps) {
+            console.log(camps);
+            renderHeader(camps);
+            renderRest(camps);
+            let api = "../api/businesses/" + cusineId + "/" + pr + "/" + hlist;
+            console.log(api);
+            ajaxCall("GET", api, "", getFSuccess, getFError);
+        }
+        function getCampError(err) {
+            console.log(err);
+        }
             //function getFSuccess(data) {
             //    console.log(cusineId);
             //    console.log(data);
@@ -79,11 +88,12 @@
 
         function getFSuccess(data) {
             console.log(data);
-            render(data);
+            renderRest(data);
+            let str = `</table></div>`;
+            $("#ph2").append(str);
         }
-
-        function render(arr) {
-
+        function renderHeader(arr) {
+            let str = "";
             if (arr.length == 0) {
                 str = `<br/><br/><br/><h2>There is no restaurants to display...</h2><h3>You can change your preferences and try again</h3>`;
             }
@@ -100,13 +110,19 @@
                                                     <td><h3>Highlights</h3></td>
                                              </tr>`;
 
+            }
+            $("#ph2").html(str);
+        }
+        function renderRest(arr) {
+            let str = "";
                 for (var i = 0; i < arr.length; i++) {
                     str += `<tr>`
                     if (arr[i].Image == "") {
                         str += `<td><img src="default.jpg"/></td> `
                     }
                     else {
-                        str += `<td><img src="` + arr[i].Image + `"></td>`
+                        str += `<td><a href = "` + arr[i].Url + `" >
+                                <img src="`+ arr[i].Image + `"></a></td>`
                     }
                     str += `<td>` + arr[i].Id + `</td>
                                                                 <td>` + arr[i].Name + `</td>
@@ -118,11 +134,7 @@
                                                                 <td>` + arr[i].Highlights.toString() + `</td>
                                                             </tr>`
                 }
-                str += `</table></div>`;
-            }
-                $("#ph2").html(str);
-
-
+                $("#ph2").append(str);
             }
 
             function getFError(data) {
@@ -136,6 +148,9 @@
     <div>
         <a href="Login.html" class="btn btn-info btn-lg myButtonadd" id="btnSignout">
             <span class="glyphicon glyphicon-log-out"></span> Log out
+        </a>
+        <a href="Admin.html" class="btn btn-info btn-lg myButtonadd">
+            <span class="glyphicon glyphicon-log-out"></span> Admin Page
         </a>
         <div id="ph1"></div>
         <div>
