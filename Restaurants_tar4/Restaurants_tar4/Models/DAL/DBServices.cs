@@ -647,21 +647,22 @@ namespace tar1.Models.DAL
                 }
             }
         }
-        public List<Businesses> getRestCampaigns()
+        public List<Businesses> getRestCampaigns(int cusineId, int pr, List<string> hlist)
         {
             SqlConnection con = null;
             List<Businesses> rList = new List<Businesses>();
             try
             {
                 con = connect("DBConnectionString");
+                string selectSTR = "";
 
-                string selectSTR = "select [id],[image],[name],[reating],[category],[priceRange],[phone],[address],[cusiId],[url]" +
-                                    " from [dbo].[RestaurantsB_2021] r inner join [dbo].[CampaignsB_2021] c"+
-                                    " on c.resid=r.id";
-    
+                 selectSTR = "select TOP 3 [id],[image],[name],[reating],[category],[priceRange],[phone],[address],[cusiId],[url]" +
+                " from [dbo].[RestaurantsB_2021] r inner join [dbo].[CampaignsB_2021] c" +
+                " on c.resid=r.id where r.cusiId="+cusineId +" ORDER BY c.budget DESC";
+
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
-
                 SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                if (dr.HasRows) { 
                 while (dr.Read())
                 {
                     Businesses favourite = new Businesses();
@@ -680,6 +681,54 @@ namespace tar1.Models.DAL
                     rList.Add(favourite);
                 }
                 return rList;
+                    }
+                else
+                {
+                    //SqlCommand cmd1 = new SqlCommand(selectSTR, con);
+                    //SqlDataReader dr1 = cmd1.ExecuteReader(CommandBehavior.CloseConnection);
+                    //if (pr != 0)
+                    //{
+                    //    selectSTR = "select TOP 3 [id],[image],[name],[reating],[category],[priceRange],[phone],[address],[cusiId],[url]" +
+                    //    " from [dbo].[RestaurantsB_2021] r inner join [dbo].[CampaignsB_2021] c" +
+                    //    " on c.resid=r.id  where priceRange=" + pr + " ORDER BY c.budget DESC";
+                    //    cmd1 = new SqlCommand(selectSTR, con);
+                    //    dr1 = cmd1.ExecuteReader(CommandBehavior.CloseConnection);
+                    //    if (!dr.HasRows)
+                    //    {
+                    //        selectSTR = "select TOP 3 [id],[image],[name],[reating],[category],[priceRange],[phone],[address],[cusiId],[url]" +
+                    //        " from [dbo].[RestaurantsB_2021] r inner join [dbo].[CampaignsB_2021] c" +
+                    //        " on c.resid=r.id ORDER BY c.budget DESC";
+                    //        cmd = new SqlCommand(selectSTR, con);
+                    //        dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                    //    }
+                    //}
+                    //else
+                    //{
+                        selectSTR = "select TOP 3 [id],[image],[name],[reating],[category],[priceRange],[phone],[address],[cusiId],[url]" +
+                        " from [dbo].[RestaurantsB_2021] r inner join [dbo].[CampaignsB_2021] c" +
+                        " on c.resid=r.id ORDER BY c.budget DESC";
+                        cmd = new SqlCommand(selectSTR, con);
+                        dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+
+                    while (dr.Read())
+                    {
+                        Businesses favourite = new Businesses();
+                        favourite.Id = Convert.ToInt32(dr["id"]);
+                        favourite.Image = (string)dr["image"];
+                        favourite.Name = (string)dr["name"];
+                        favourite.Reating = (float)Convert.ToDouble(dr["reating"]);
+                        favourite.Category = (string)dr["category"];
+                        favourite.PriceRange = Convert.ToInt32(dr["priceRange"]);
+                        favourite.Phone = (string)dr["phone"];
+                        favourite.Address = (string)dr["address"];
+                        favourite.CuisineId = Convert.ToInt32(dr["cusiId"]);
+                        favourite.Url = (string)dr["url"];
+                        int id = Convert.ToInt32(dr["id"]);
+                        favourite.Highlights = getRestHighlights(id);
+                        rList.Add(favourite);
+                    }
+                    return rList;
+                }
             }
             catch (Exception ex)
             {

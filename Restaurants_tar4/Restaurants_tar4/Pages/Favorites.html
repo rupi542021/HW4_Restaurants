@@ -24,7 +24,7 @@
                 localStorage.removeItem("loggedIn");
             });
             $(".cuisine_btn").click(function () {
-                ajaxCall("GET", "../api/businesses/getRestCamp", "", getCampSuccess, getCampError);
+                
                 cusineId = this.id;
                 if (localStorage.getItem("loggedIn") == "") {
                     pr = 0;
@@ -38,7 +38,7 @@
                     else
                        hlist = customerIn.Chlist;
                 }
-
+                ajaxCall("GET", "../api/businesses/getRestCamp/" + cusineId + " / " + pr + " /" + hlist, "", getCampSuccess, getCampError);
                 
             });
         });
