@@ -24,11 +24,11 @@ namespace tar1.Controllers
             return restaurant.ReadAll();
         }
         [HttpGet]
-        [Route("api/businesses/getRestCamp/{cusineId}/{pr}/{hlist}")]
-        public List<Businesses> GetByCamp(int cusineId, int pr, List<string> hlist)
+        [Route("api/businesses/getRestCamp/{cusineId}")]
+        public List<Businesses> GetByCamp(int cusineId)
         {
             Businesses restcamp = new Businesses();
-            return restcamp.ReadByCamp(cusineId, pr, hlist);
+            return restcamp.ReadByCamp(cusineId);
         }
 
         [HttpGet]

@@ -33,12 +33,26 @@
             $("#createDiv").hide();
 
             buttonEvents();
+
+            $("#btnAdminGuest").click(function () {
+                localStorage.setItem("loggedIn", "");
+            });
         });
         function getRestSuccess(AllRest) {
-            console.log(AllRest);
-            let str = `<select name="campaing" id="campaing"><option value="0">Choose</option>`; 
+            AllCampaignsID = [];
+            restWithOutCamp = [];
+            for (var i = 0; i < AllCampaigns.length; i++) {
+                AllCampaignsID.push(AllCampaigns[i].ResID)
+            }
+
             for (var i = 0; i < AllRest.length; i++) {
-                str += "<option value=" + AllRest[i].Id +">"+AllRest[i].Name+"</option>"
+                if (!AllCampaignsID.includes(AllRest[i].Id))
+                    restWithOutCamp.push(AllRest[i])
+            }
+            console.log(restWithOutCamp);
+            let str = `<select name="campaing" id="campaing"><option value="0">Choose</option>`; 
+            for (var i = 0; i < restWithOutCamp.length; i++) {
+                str += "<option value=" + restWithOutCamp[i].Id + ">" + restWithOutCamp[i].Name+"</option>"
             }
             str += `</select>`;
 
@@ -213,6 +227,7 @@
         function getError(err) {
             swal("Error: " + err);
         }
+
     </script>
 
 </head>
@@ -225,7 +240,9 @@
             </div>
         </div>
     </nav>
-
+    <a href="Favorites.html" class="btn btn-info btn-lg myButtonadd" id="btnAdminGuest">
+        <span class="glyphicon glyphicon-log-out"></span> Client Page
+    </a>
     <div class="container">
         <h5><b>Create New </b></h5>
         <button class="w3-button w3-circle w3-black plusBtn">+</button>

@@ -63,5 +63,22 @@ namespace Restaurants_tar4.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "connecting error");
             }
         }
+        [HttpPut]
+        [Route("api/Campaigns/{mode}/{id}")]
+        public HttpResponseMessage Put(string mode,int id)
+        {
+            try
+            {
+                Campaign camp = new Campaign();
+                List<Campaign> campList = camp.UpdateViewCamp(mode,id);
+                return Request.CreateResponse(HttpStatusCode.OK, campList);
+            }
+
+            catch
+            {
+
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "connecting error");
+            }
+        }
     }
 }

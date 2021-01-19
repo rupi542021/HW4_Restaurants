@@ -69,5 +69,12 @@ namespace Restaurants_tar4.Models
             dbs.DeleteCamp(id);
             return dbs.getCampaigns();
         }
+        public List<Campaign> UpdateViewCamp(string mode,int id)
+        {
+            DBServices dbs = new DBServices();
+            dbs.UpdateViewCamp(mode,id);
+            return dbs.getCampaigns();
+        }
+
     }
 }

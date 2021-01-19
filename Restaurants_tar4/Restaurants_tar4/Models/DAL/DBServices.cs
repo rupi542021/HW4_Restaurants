@@ -543,10 +543,59 @@ namespace tar1.Models.DAL
 
         private string BuildDeleteCommand(int id)
         {
-            String prefix = "DELETE FROM [CampaignsB_2021] WHERE resid = " + id;
+            String prefix = "UPDATE [CampaignsB_2021] SET [status]=0 WHERE resid =" + id;
             return prefix;
         }
+        public int UpdateViewCamp(string mode, int id)
+        {
+            SqlConnection con;
+            SqlCommand cmd;
+            try
+            {
+                con = connect("DBConnectionString"); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            string cStr = BuildUpdateCommand(mode,id); // helper method to build the insert string
+            cmd = CreateCommand(cStr, con); // create the command
+            try
+            {
+                int numEffected = cmd.ExecuteNonQuery(); // execute the command
+                return numEffected;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    // close the db connection
+                    con.Close();
+                }
+            }
+        }
 
+        private string BuildUpdateCommand(string mode, int id)
+        {
+            String prefix = "";
+            if (mode == "view")
+            {
+                prefix = "UPDATE [CampaignsB_2021] SET [views]=[views]+1 WHERE resid =" + id;
+                return prefix;
+            }
+            else
+            {
+                prefix = "UPDATE [CampaignsB_2021] SET [clicks]=[clicks]+1 WHERE resid =" + id;
+                return prefix;
+            }
+
+        }
 
         public int InsertHighlight(Businesses highlight)
         {
@@ -615,7 +664,7 @@ namespace tar1.Models.DAL
 
                 con = connect("DBConnectionString");
 
-                string selectSTR = "select * from [CampaignsB_2021]";
+                string selectSTR = "select * from [CampaignsB_2021] where [status]=1";
 
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
 
@@ -628,8 +677,8 @@ namespace tar1.Models.DAL
                     camp.Budget = (float)Convert.ToDouble(dr["budget"]);
                     camp.Clicks = Convert.ToInt32(dr["clicks"]);
                     camp.Views = Convert.ToInt32(dr["views"]);
-                    camp.Status = Convert.ToInt32(dr["status"]);
                     camp.Balance = camp.Budget - (float)(camp.Clicks * 0.5 + camp.Views * 0.1);
+                    camp.Status = (camp.Balance < 0.5) ? DeleteCamp(camp.ResID) : Convert.ToInt32(dr["status"]);
                     campList.Add(camp);
                 }
                 return campList;
@@ -647,7 +696,7 @@ namespace tar1.Models.DAL
                 }
             }
         }
-        public List<Businesses> getRestCampaigns(int cusineId, int pr, List<string> hlist)
+        public List<Businesses> getRestCampaigns(int cusineId)
         {
             SqlConnection con = null;
             List<Businesses> rList = new List<Businesses>();
@@ -658,11 +707,10 @@ namespace tar1.Models.DAL
 
                  selectSTR = "select TOP 3 [id],[image],[name],[reating],[category],[priceRange],[phone],[address],[cusiId],[url]" +
                 " from [dbo].[RestaurantsB_2021] r inner join [dbo].[CampaignsB_2021] c" +
-                " on c.resid=r.id where r.cusiId="+cusineId +" ORDER BY c.budget DESC";
+                " on c.resid=r.id where r.cusiId="+cusineId +"and c.status=1 ORDER BY c.budget DESC";
 
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
                 SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
-                if (dr.HasRows) { 
                 while (dr.Read())
                 {
                     Businesses favourite = new Businesses();
@@ -681,35 +729,35 @@ namespace tar1.Models.DAL
                     rList.Add(favourite);
                 }
                 return rList;
-                    }
-                else
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
                 {
-                    //SqlCommand cmd1 = new SqlCommand(selectSTR, con);
-                    //SqlDataReader dr1 = cmd1.ExecuteReader(CommandBehavior.CloseConnection);
-                    //if (pr != 0)
-                    //{
-                    //    selectSTR = "select TOP 3 [id],[image],[name],[reating],[category],[priceRange],[phone],[address],[cusiId],[url]" +
-                    //    " from [dbo].[RestaurantsB_2021] r inner join [dbo].[CampaignsB_2021] c" +
-                    //    " on c.resid=r.id  where priceRange=" + pr + " ORDER BY c.budget DESC";
-                    //    cmd1 = new SqlCommand(selectSTR, con);
-                    //    dr1 = cmd1.ExecuteReader(CommandBehavior.CloseConnection);
-                    //    if (!dr.HasRows)
-                    //    {
-                    //        selectSTR = "select TOP 3 [id],[image],[name],[reating],[category],[priceRange],[phone],[address],[cusiId],[url]" +
-                    //        " from [dbo].[RestaurantsB_2021] r inner join [dbo].[CampaignsB_2021] c" +
-                    //        " on c.resid=r.id ORDER BY c.budget DESC";
-                    //        cmd = new SqlCommand(selectSTR, con);
-                    //        dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
-                    //    }
-                    //}
-                    //else
-                    //{
-                        selectSTR = "select TOP 3 [id],[image],[name],[reating],[category],[priceRange],[phone],[address],[cusiId],[url]" +
-                        " from [dbo].[RestaurantsB_2021] r inner join [dbo].[CampaignsB_2021] c" +
-                        " on c.resid=r.id ORDER BY c.budget DESC";
-                        cmd = new SqlCommand(selectSTR, con);
-                        dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                    con.Close();
+                }
+            }
+        }
+        public List<Businesses> getRestCampaigns1()
+        {
+            SqlConnection con = null;
+            List<Businesses> rList = new List<Businesses>();
+            try
+            {
+                con = connect("DBConnectionString");
+                string selectSTR = "";
 
+                selectSTR = "select TOP 3 [id],[image],[name],[reating],[category],[priceRange],[phone],[address],[cusiId],[url]" +
+               " from [dbo].[RestaurantsB_2021] r inner join [dbo].[CampaignsB_2021] c" +
+               " on c.resid=r.id where c.status=1 ORDER BY c.budget DESC";
+
+                SqlCommand cmd = new SqlCommand(selectSTR, con);
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                     while (dr.Read())
                     {
                         Businesses favourite = new Businesses();
@@ -728,7 +776,6 @@ namespace tar1.Models.DAL
                         rList.Add(favourite);
                     }
                     return rList;
-                }
             }
             catch (Exception ex)
             {
@@ -743,7 +790,6 @@ namespace tar1.Models.DAL
                 }
             }
         }
-
         public int UpdateCampaign(Campaign camp)
         {
             SqlConnection con;

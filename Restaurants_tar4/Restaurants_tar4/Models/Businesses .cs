@@ -62,10 +62,14 @@ namespace tar1.Models
             dbs.InsertHighlight(this);
         }
 
-        public List<Businesses> ReadByCamp(int cusineId, int pr, List<string> hlist)
+        public List<Businesses> ReadByCamp(int cusineId)
         {
             DBServices dbs = new DBServices();
-            List<Businesses> restc = dbs.getRestCampaigns(cusineId, pr, hlist);
+            List<Businesses> restc = dbs.getRestCampaigns(cusineId);
+            if (restc.Count == 0)
+            {
+                restc = dbs.getRestCampaigns1();
+            }
             return restc;
         }
 

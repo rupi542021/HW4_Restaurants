@@ -38,9 +38,10 @@
                     else
                        hlist = customerIn.Chlist;
                 }
-                ajaxCall("GET", "../api/businesses/getRestCamp/" + cusineId + " / " + pr + " /" + hlist, "", getCampSuccess, getCampError);
+                ajaxCall("GET", "../api/businesses/getRestCamp/" + cusineId , "", getCampSuccess, getCampError);
                 
             });
+
         });
         function getCampSuccess(camps) {
             console.log(camps);
@@ -49,6 +50,19 @@
             let api = "../api/businesses/" + cusineId + "/" + pr + "/" + hlist;
             console.log(api);
             ajaxCall("GET", api, "", getFSuccess, getFError);
+
+            for (var i = 0; i < camps.length; i++) {
+                let restId2Update = camps[i].Id;
+                let mode = "view";
+                ajaxCall("PUT", "../api/Campaigns/" + mode +"/" + restId2Update,"", updateSuccess, updateError);
+            }
+        }
+        function updateSuccess(data) {
+            console.log("the camp views updated")
+            console.log(data);
+        }
+        function updateError(err) {
+            console.log(err);
         }
         function getCampError(err) {
             console.log(err);
@@ -119,11 +133,11 @@
                     str += `<tr>`
                     if (arr[i].Image == "") {
                         str += `<td><a href = "` + arr[i].Url + `" >
-                                <img src="default.jpg"></a></td>`
+                                <img src="default.jpg" onclick="UpdateClick(` + arr[i].Id +`)"></a></td>`
                     }
                     else {
                         str += `<td><a href = "` + arr[i].Url + `" >
-                                <img src="`+ arr[i].Image + `"></a></td>`
+                                <img src="`+ arr[i].Image + `" onclick="UpdateClick(` + arr[i].Id+`)"></a></td>`
                     }
                     str += `<td>` + arr[i].Id + `</td>
                                                                 <td>` + arr[i].Name + `</td>
@@ -142,7 +156,11 @@
                 alert("err");
                 console.log(data);
             }
-       
+        function UpdateClick(restid2updateclick){
+            let mode = "click";
+            console.log(mode);
+            ajaxCall("PUT", "../api/Campaigns/" + mode + "/" + restid2updateclick, "", updateSuccess, updateError);
+        }
     </script>
 </head>
 <body>
