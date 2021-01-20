@@ -15,20 +15,25 @@
     <title></title>
     <script>
         $(document).ready(function () {
-
-            $("#pForm").submit(f1);
             selectedRadio = 0;
+            if (localStorage.getItem("customer") != "")
+            {
+                let customer = JSON.parse(localStorage.getItem("customer"))
+                $("#nameTB").val(customer.Name);
+                $("#lnameTB").val(customer.Lastname);
+                $("#emailTB").val(customer.Email);
+                $("#phoneTB").val(customer.Phone);
+                $("#passwordTB").val(customer.Password);
+            }
+            $("#pForm").submit(function (event) {
+                uploadimg();
+                addCustomer();
+                event.preventDefault();
+                window.location.href = 'Choose Highlights.html';
+            }); 
         });
 
-
-        function f1() {
-            uploadimg();
-            addCustomer();
-            return false;
-        }
-
         function addCustomer() {
-
             customer = {
                 Name: $("#nameTB").val(),
                 Lastname: $("#lnameTB").val(),
@@ -42,7 +47,7 @@
             let customerTostring = JSON.stringify(customer);
             localStorage.setItem("customer", customerTostring);
             localStorage.setItem("loggedIn", "");
-            window.location.href = 'Choose Highlights.html';
+            
         }
 
         function uploadimg() {

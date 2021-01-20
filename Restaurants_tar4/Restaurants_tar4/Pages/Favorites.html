@@ -37,7 +37,7 @@
                 let str = `<ul>
                     <li><a href="Favorites.html">Hello Guest!   </a></li>
                     <li><a href="Login.html">
-                        <span class="glyphicon glyphicon-log-out" id="btnSignout"></span> Log out</a></li>
+                        <span class="glyphicon glyphicon-log-out" id="btnSignout"></span> Exit</a></li>
                     <li style="float:right"><a class="active" href="Admin.html">
                         <span class="glyphicon glyphicon-cog"></span> Admin</a></li>
                 </ul>`;
@@ -47,6 +47,7 @@
             }
             $("#btnSignout").click(function () {
                 localStorage.removeItem("loggedIn");
+                localStorage.setItem("customer","");
             });
             $(".cuisine_btn").click(function () {
                 cusineId = this.id;

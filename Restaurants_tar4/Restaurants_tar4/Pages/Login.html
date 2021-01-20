@@ -70,8 +70,12 @@
 
         $(document).ready(function () {
             $("#loginForm").submit(checkCustomer);
-            $("#btnGuest").click(function () {
+            $(".btnGuest").click(function () {
                 localStorage.setItem("loggedIn", "");
+                localStorage.setItem("customer", "");
+            });
+            $("#newCust").click(function () {
+                localStorage.setItem("customer", "");
             });
         });
 
@@ -120,11 +124,14 @@
             </div>
         </form>
     </div>
-    <a href="Favorites.html" class="myButtonadd" id="btnGuest">
+    <a href="Favorites.html" class="myButtonadd btnGuest">
         I'm a Guest :)
     </a>
-    <a href="customerForm.html" class="myButtonadd">
+    <a href="customerForm.html" class="myButtonadd" id="newCust">
         I Want To Sign Up!
+    </a>
+    <a href="Admin.html" class="myButtonadd btnGuest">
+        Admin
     </a>
 
 </body>

@@ -48,7 +48,8 @@ namespace tar2.Models
         {
             DBServices dbs = new DBServices();
             dbs.InsertCustomer(this);
-            dbs.InsertCustomerHighlights(this);
+            if(this.Chlist.Count>0)
+                dbs.InsertCustomerHighlights(this);
         }
 
         public Customer Read(string email, string pass) {

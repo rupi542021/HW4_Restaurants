@@ -180,7 +180,7 @@ namespace tar1.Models.DAL
                         c.PriceRange = Convert.ToInt32(dr["price_range"]);
                         c.Chlist =getCustomerHighlights(c.Id);
                         return c;
-                    }
+                    }  
                 }
                 return null;
             }
@@ -394,12 +394,15 @@ namespace tar1.Models.DAL
         private string BuildInsertCommand1(Campaign camp)
         {
             String command;
+            String prefix = "";
             StringBuilder sb = new StringBuilder();
             // use a string builder to create the dynamic string
 
-            sb.AppendFormat("Values('{0}','{1}','{2}','{3}','{4}','{5}')", camp.ResID, camp.ResName, camp.Budget, camp.Clicks, camp.Views, camp.Status);
+                sb.AppendFormat("Values('{0}','{1}','{2}','{3}','{4}','{5}')", camp.ResID, camp.ResName, camp.Budget, camp.Clicks, camp.Views, 1);
 
-            String prefix = "INSERT INTO [CampaignsB_2021]" + "([resid],[resName],[budget],[clicks],[views],[status])";
+                prefix = "DELETE FROM [CampaignsB_2021] WHERE resid =" + camp.ResID +
+                "INSERT INTO [CampaignsB_2021]" + "([resid],[resName],[budget],[clicks],[views],[status])";
+
             command = prefix + sb.ToString();
             return command;
         }
@@ -664,7 +667,7 @@ namespace tar1.Models.DAL
 
                 con = connect("DBConnectionString");
 
-                string selectSTR = "select * from [CampaignsB_2021] where [status]=1";
+                string selectSTR = "select * from [CampaignsB_2021]";
 
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
 
