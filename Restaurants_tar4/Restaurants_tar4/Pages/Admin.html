@@ -22,6 +22,8 @@
     <script src="../Scripts/ajaxCalls.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+
     <script>
 
         $(document).ready(function () {
@@ -50,7 +52,7 @@
                     restWithOutCamp.push(AllRest[i])
             }
             console.log(restWithOutCamp);
-            let str = `<select name="campaing" id="campaing"><option value="0">Choose</option>`; 
+            let str = `<select name="campaing" id="campaing" class="selectpicker" required><option value="">Choose</option>`; 
             for (var i = 0; i < restWithOutCamp.length; i++) {
                 str += "<option value=" + restWithOutCamp[i].Id + ">" + restWithOutCamp[i].Name+"</option>"
             }
@@ -71,6 +73,8 @@
             });
             $(document).on("click", ".plusBtn", function () {
                 $("#pForm").hide();
+                $("#editDiv").hide();
+                $("#CreatebtnDiv").hide();
                 $("#createDiv").show();
             });
 
@@ -136,15 +140,19 @@
             console.log(campsdata);
             $("#createDiv").hide();
             $("#pForm").show();
-
+            $("#CreatebtnDiv").show();
+            swal("The Campaign Created Successfuly!", "Great Job", "success");
             tbl.clear();
             redrawTable(tbl, campsdata);
             buttonEvents();
             $("#editDiv").hide();
-            swal("The Campaign Created Successfuly!", "Great Job", "success");
+            document.getElementById('budgetCreate').value = '';
+            document.getElementById("campaing").selectedIndex = 0;
+
         }
         function postError(err) {
             console.log(err)
+            swal("Connection problem");
         }
         function populateFields(campId) {
             campaign = getCampaign(campId);
@@ -162,10 +170,12 @@
         function updateSuccess(campsdata) {
             //console.log("aftreUpdate", campsdata);
             tbl.clear();
+            swal("Updated Successfuly!", "Great Job", "success");
             redrawTable(tbl, campsdata);
             buttonEvents();
             $("#editDiv").hide();
-            swal("Updated Successfuly!", "Great Job", "success");
+            document.getElementById('budget').value = '';
+            
         }
         function updateError(err){
             swal("Error: update failed");
@@ -196,7 +206,7 @@
             try {
                 tbl = $('#campaignTable').DataTable({
                     data: AllCampaigns,
-                    pageLength: 5,
+                    pageLength: 10,
                     columns: [
                         {
                             render: function (data, type, row, meta) {
@@ -232,20 +242,20 @@
 
 </head>
 <body>
+    <ul>
+        <li><a href="Admin.html">Campaigns DataTable   </a></li>
+        <li style="float:right">
+            <a class="active" href="Favorites.html" id="btnAdminGuest">
+                <span class="glyphicon glyphicon-log-out"></span> Client Page
+            </a>
+        </li>
+    </ul><br/>
 
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">Campaigns DataTable - Admin</a>
-            </div>
-        </div>
-    </nav>
-    <a href="Favorites.html" class="btn btn-info btn-lg myButtonadd" id="btnAdminGuest">
-        <span class="glyphicon glyphicon-log-out"></span> Client Page
-    </a>
     <div class="container">
-        <h5><b>Create New </b></h5>
-        <button class="w3-button w3-circle w3-black plusBtn">+</button>
+        <div id="CreatebtnDiv">
+            <h3><b>Create New </b></h3>
+            <button class="w3-button w3-circle w3-black plusBtn">+</button>
+        </div>
         <form id="pForm">
             <table id="campaignTable" class="display nowrap" style="width:100%">
                 <thead>
@@ -280,12 +290,12 @@
             <form id="campaignsFormCreate">
                 <br />
                 <div class="form-group row" id="CreateForm">
-                    <h4>Create New campaign:</h4>
-                    <div class="form-group col-sm-3">
+                    <h4 id="createCSS">Create New campaign:</h4>
+                    <div class="form-group">
                         <label for="budget"><span class="red-star">★ </span>Select a Restaurant</label>
                         <div id="selectRest"></div>
                     </div>
-                    <div class="form-group col-sm-3">
+                    <div class="form-group">
                         <label for="budget"><span class="red-star">★ </span>Budget</label>
                         <input type="text" class="form-control" id="budgetCreate" placeholder="Enter the budget" required>
                     </div>

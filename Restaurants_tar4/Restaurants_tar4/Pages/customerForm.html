@@ -15,7 +15,7 @@
     <title></title>
     <script>
         $(document).ready(function () {
-            
+
             $("#pForm").submit(f1);
             selectedRadio = 0;
         });
@@ -90,21 +90,18 @@
                 <input type="text" class="form-control" id="nameTB" placeholder="Enter your first name" required
                        pattern="^[a-zA-Z]{2,10}$"
                        oninvalid="this.setCustomValidity('Invalid Name Format')"
-                       oninput="this.setCustomValidity('')"
-                       value="doron"/>
+                       oninput="this.setCustomValidity('')"/>
             </div>
             <div class="form-group">
                 <label for="lnameTB"><span class="red-star">★ </span>Last Name</label>
                 <input type="text" class="form-control" id="lnameTB" placeholder="Enter your last name" required
                        pattern="^[a-zA-Z]{2,20}$"
                        oninvalid="this.setCustomValidity('Invalid Last Name Format')"
-                       oninput="this.setCustomValidity('')"
-                       value="batsir"/>
+                       oninput="this.setCustomValidity('')"/>
             </div>
             <div class="form-group">
                 <label for="emailTB"><span class="red-star">★ </span>Email</label>
-                <input type="email" class="form-control" id="emailTB" placeholder="Enter your email" required
-                       value="doron@1234.com"/>
+                <input type="email" class="form-control" id="emailTB" placeholder="Enter your email" required/>
             </div>
             <div class="form-group">
                 <label for="phoneTB"> <span class="red-star">★ </span> Phone (using a pattern validator) </label>
@@ -119,8 +116,7 @@
                 <input type="password" class="form-control" id="passwordTB" placeholder="Enter your password" required
                        pattern="(?=.*\d)(?=.*[A-Z]).{8,}"
                        oninvalid="this.setCustomValidity('Must contain at least one number and one uppercase letter, and at least 8 or more characters')"
-                       oninput="this.setCustomValidity('')"
-                        value="1Abredskfdksd"/>
+                       oninput="this.setCustomValidity('')"/>
             </div>
             <div class="form-group">
                 <label for="imgTB">Image </label><br/>

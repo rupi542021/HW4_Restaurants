@@ -80,10 +80,10 @@ namespace tar1.Models
             return b;
         }
 
-        public List<Businesses> Read(int cusineId, int pr, List<string> hlist)
+        public List<Businesses> Read(int cusineId, int pr)
         {
             DBServices dbs = new DBServices();
-            List<Businesses> b = dbs.getBusinesses(cusineId, pr, hlist);
+            List<Businesses> b = dbs.getBusinesses(cusineId, pr);
             return b;
         }
     }

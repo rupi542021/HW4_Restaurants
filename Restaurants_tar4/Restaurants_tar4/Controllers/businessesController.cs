@@ -32,12 +32,12 @@ namespace tar1.Controllers
         }
 
         [HttpGet]
-        [Route("api/businesses/{cusineId}/{pr}/{hlist}")]
-        public List<Businesses> Get(int cusineId, int pr, List<string> hlist)
+        [Route("api/businesses/{cusineId}/{pr}")]
+        public List<Businesses> Get(int cusineId, int pr)
         {
             Businesses restaurant = new Businesses();
             //List<Businesses> favourites = favourite.Read();
-            return restaurant.Read(cusineId,pr,hlist);
+            return restaurant.Read(cusineId,pr);
         }
 
         // GET api/<controller>/5

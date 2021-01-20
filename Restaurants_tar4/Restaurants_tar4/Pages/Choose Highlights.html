@@ -21,13 +21,26 @@
                 customerHighlight = [];
                 customerParse = JSON.parse(localStorage.getItem("customer"));
                 console.log(customerParse);
-                let str = `<a href="customerForm.html" class="btn btn -default btn - sm">
-                    < span class="glyphicon glyphicon-circle-arrow-left" ></span > Back</a >`
+
+                let str = `<ul>
+                    <li><a>Customer Highlights   </a></li>
+                    <li style="float:right">
+                        <a class="active" href="customerForm.html">
+                            <span class="glyphicon glyphicon-circle-arrow-left"></span> Back</a></li>
+                </ul><br />`
                 document.getElementById("backbtn").innerHTML = str;
                 renderAllHighlights(hArr);         
                
             }
             else {
+                let str1 = `<ul>
+                    <li><a>Customer Highlights   </a></li>
+                    <li style="float:right">
+                        <a class="active" href="Favorites.html">
+                            <span class="glyphicon glyphicon-circle-arrow-right"></span> Back</a></li>
+                </ul><br />`
+                document.getElementById("backbtn").innerHTML = str1;
+
                 customerIn = JSON.parse(localStorage.getItem("loggedIn"));
                 customerHighlight = customerIn.Chlist;
                 selectedRadio = customerIn.PriceRange;
@@ -105,7 +118,7 @@
         function putSuccess(data) {
             console.log(data);
             localStorage.setItem("loggedIn", JSON.stringify(data));
-            swal("Your Preferences was been updated", "", "success").then(function () { window.location.href = 'Favorites.html' });;
+            swal("Your Preferences was been updated", "", "success").then(function () { window.location.href = 'Favorites.html' });
         }
         function putError(err) {
             console.log(err);
@@ -113,7 +126,7 @@
         function postSuccess(data) {
             console.log(data);
             localStorage.setItem("loggedIn", JSON.stringify(data));
-            swal("Your Details Added Successfuly!", "Thank you :)", "success").then(function () { window.location.href = 'Favorites.html' });
+            swal("Hi "+data.Name+"! Your Details Added Successfuly!", "Thank you :)", "success").then(function () { window.location.href = 'Favorites.html' });
         }
 
         function postError(err) {

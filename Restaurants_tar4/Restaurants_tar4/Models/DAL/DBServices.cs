@@ -17,7 +17,7 @@ namespace tar1.Models.DAL
         public SqlDataAdapter da;
         public DataTable dt;
 
-        public List<Businesses> getBusinesses(int cusineId, int pr, List<string> hlist)
+        public List<Businesses> getBusinesses(int cusineId, int pr)
         {
             SqlConnection con = null;
             List<Businesses> rList = new List<Businesses>();
@@ -25,13 +25,13 @@ namespace tar1.Models.DAL
             {
                 String selectSTR = "";
                 con = connect("DBConnectionString");
-                if (pr == 0 && hlist == null)
+                if (pr == 0)
                 {
-                    selectSTR = "select * from[RestaurantsB_2021] where cusiId = " + cusineId;
+                    selectSTR = "select * from [RestaurantsB_2021] where cusiId=" + cusineId+ " ORDER BY [reating] DESC";
                 }
                 else
                 {
-                    selectSTR = "select * from[RestaurantsB_2021] where cusiId =" + cusineId + "and priceRange=" + pr;
+                    selectSTR = "select * from [RestaurantsB_2021] where cusiId=" + cusineId + " and priceRange=" + pr + " ORDER BY [reating] DESC";
                 }
                 //else if (pr == 0 && hList != null)
                 //{

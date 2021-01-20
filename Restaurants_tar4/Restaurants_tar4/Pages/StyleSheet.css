@@ -7,7 +7,14 @@ table, td {
     border: 2px solid black;
     border-collapse: collapse;
     text-align: center;
-    background-color: rgba(191, 191, 191, 0.2);
+    background-color: rgba(191, 191, 191, 0.3);
+}
+.pay {
+    background-color: rgba(255, 139, 97, 0.7);
+}
+.head {
+    background-color: rgba(187, 238, 119, 0.8);
+    font-weight:bold
 }
 
 body {
@@ -53,6 +60,7 @@ body {
     padding: 9px 20px;
     text-decoration: none;
     text-shadow: 0px 1px 0px #e69b8a;
+    
 }
 
 form {
@@ -163,4 +171,34 @@ a.btn.btn-default.btn-sm {
 
 .red-star {
     color: red;
+}
+
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+li {
+    float: left;
+}
+
+    li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+    }
+
+        li a:hover:not(.active) {
+            background-color: #111;
+        }
+
+.active {
+    background-color: #b8e356;
+    color:black
 }

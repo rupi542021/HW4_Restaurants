@@ -15,29 +15,41 @@
     <script>
         $(document).ready(function () {
             if (localStorage.getItem("loggedIn") != "") {
-                let str = `<a href="Choose Highlights.html" class="btn btn-info btn-lg myButtonadd" id="btnEditP">
-                            <span class="glyphicon glyphicon-pencil"></span> Edit Preferences                               
-                          </a>`;
+                customerIn = JSON.parse(localStorage.getItem("loggedIn"));
+                pr = customerIn.PriceRange;
+                if (customerIn.Chlist.length == 0)
+                    hlist = null;
+                else
+                    hlist = customerIn.Chlist;
+
+                let str = `<ul>
+                    <li><a href="Favorites.html">Hello `+ customerIn.Name + `!   </a></li>
+                    <li><a href="Choose Highlights.html" id="btnEditP">
+                        <span class="glyphicon glyphicon-pencil"></span> Edit Preferences</a></li>
+                    <li><a href="Login.html">
+                        <span class="glyphicon glyphicon-log-out" id="btnSignout"></span> Log out</a></li>
+                    <li style="float:right"><a class="active" href="Admin.html">
+                        <span class="glyphicon glyphicon-cog"></span> Admin</a></li>
+                </ul>`;
                 $("#ph1").html(str);
+            }
+            else {
+                let str = `<ul>
+                    <li><a href="Favorites.html">Hello Guest!   </a></li>
+                    <li><a href="Login.html">
+                        <span class="glyphicon glyphicon-log-out" id="btnSignout"></span> Log out</a></li>
+                    <li style="float:right"><a class="active" href="Admin.html">
+                        <span class="glyphicon glyphicon-cog"></span> Admin</a></li>
+                </ul>`;
+                $("#ph1").html(str);
+                pr = 0;
+                hlist = null;
             }
             $("#btnSignout").click(function () {
                 localStorage.removeItem("loggedIn");
             });
             $(".cuisine_btn").click(function () {
-                
                 cusineId = this.id;
-                if (localStorage.getItem("loggedIn") == "") {
-                    pr = 0;
-                    hlist = null;
-                }
-                else {
-                    customerIn = JSON.parse(localStorage.getItem("loggedIn"));
-                    pr = customerIn.PriceRange;
-                    if (customerIn.Chlist.length == 0)
-                        hlist = null;
-                    else
-                       hlist = customerIn.Chlist;
-                }
                 ajaxCall("GET", "../api/businesses/getRestCamp/" + cusineId , "", getCampSuccess, getCampError);
                 
             });
@@ -46,9 +58,10 @@
         function getCampSuccess(camps) {
             console.log(camps);
             renderHeader(camps);
-            renderRest(camps);
-            let api = "../api/businesses/" + cusineId + "/" + pr + "/" + hlist;
-            console.log(api);
+            let source = "pay"
+            renderRest(camps, source);
+
+            let api = "../api/businesses/" + cusineId + "/" + pr;
             ajaxCall("GET", api, "", getFSuccess, getFError);
 
             for (var i = 0; i < camps.length; i++) {
@@ -67,52 +80,31 @@
         function getCampError(err) {
             console.log(err);
         }
-            //function getFSuccess(data) {
-            //    console.log(cusineId);
-            //    console.log(data);
-            //    customerIn = JSON.parse(localStorage.getItem("loggedIn"));
-            //    if (customerIn.Chlist.length>0) {
-            //        restaurantsByHArr = [];
-            //        console.log(customerIn.Chlist);
-            //        for (var i = 0; i < customerIn.Chlist.length; i++) {
-            //            for (var j = 0; j < data.length; j++) {
-            //              //  console.log(data[j].Highlights);
-            //                if (data[j].Highlights.includes(customerIn.Chlist[i])) {
-            //                    restaurantsByHArr.push(data[j]);
-            //                   // if (!restaurantsByHArr.Contain(data[j])) { restaurantsByHArr.push(data[j])};
-            //                }
-            //            }
-            //        }
-            //    }
-            //    else { restaurantsByHArr = data }
-            //    console.log(restaurantsByHArr);
-            //    if (customerIn.PriceRange != 0) {
-            //        datafilteredByPR = restaurantsByHArr.filter((res) => res.PriceRange == customerIn.PriceRange);
-            //        console.log(datafilteredByPR);
-            //        datafiltered = datafilteredByPR.filter((res) => res.CuisineId == cusineId);
-            //    }
-                
-            //    else {
-            //        datafiltered = restaurantsByHArr.filter((res) => res.CuisineId == cusineId);
-                   
-            //    }
-            //    console.log(datafiltered);
-            //    render(datafiltered);
-            //}
 
         function getFSuccess(data) {
             console.log(data);
-            renderRest(data);
-            let str = `</table></div>`;
-            $("#ph2").append(str);
+            let source = "organic"
+            if (hlist!= null) {
+                restaurantsByHighLights = [];
+                for (var i = 0; i < hlist.length; i++)
+                    for (var j = 0; j < data.length; j++)
+                        if (data[j].Highlights.includes(hlist[i]))
+                            if (!restaurantsByHighLights.includes(data[j]))
+                                restaurantsByHighLights.push(data[j]);
+                restaurantsByHighLights.sort((a, b) => (a.Reating > b.Reating) ? -1 : 1)
+                renderRest(restaurantsByHighLights, source)
+            }
+            else {
+                renderRest(data, source);
+            }
         }
         function renderHeader(arr) {
-            let str = "";
+            str = "";
             if (arr.length == 0) {
                 str = `<br/><br/><br/><h2>There is no restaurants to display...</h2><h3>You can change your preferences and try again</h3>`;
             }
             else {
-                str = `<div><table><tr>
+                str = `<div><table><tr class="head">
                                                     <td><h3>Image</h3></td>
                                                     <td><h3>ID</h3></td>
                                                     <td><h3>Name</h3></td>
@@ -125,12 +117,10 @@
                                              </tr>`;
 
             }
-            $("#ph2").html(str);
         }
-        function renderRest(arr) {
-            let str = "";
+        function renderRest(arr, source) {
                 for (var i = 0; i < arr.length; i++) {
-                    str += `<tr>`
+                    str += `<tr class="` + source+`">`
                     if (arr[i].Image == "") {
                         str += `<td><a href = "` + arr[i].Url + `" >
                                 <img src="default.jpg" onclick="UpdateClick(` + arr[i].Id +`)"></a></td>`
@@ -148,9 +138,12 @@
                                                                 <td>` + arr[i].Address + `</td>
                                                                 <td>` + arr[i].Highlights.toString() + `</td>
                                                             </tr>`
-                }
-                $("#ph2").append(str);
             }
+            if (source == "organic") {
+                str += "</table></div>";
+                $("#ph2").html(str);
+            }
+        }
 
             function getFError(data) {
                 alert("err");
@@ -165,12 +158,6 @@
 </head>
 <body>
     <div>
-        <a href="Login.html" class="btn btn-info btn-lg myButtonadd" id="btnSignout">
-            <span class="glyphicon glyphicon-log-out"></span> Log out
-        </a>
-        <a href="Admin.html" class="btn btn-info btn-lg myButtonadd">
-            <span class="glyphicon glyphicon-log-out"></span> Admin Page
-        </a>
         <div id="ph1"></div>
         <div>
             <br><h1>Choose cuisine in NYC</h1>
