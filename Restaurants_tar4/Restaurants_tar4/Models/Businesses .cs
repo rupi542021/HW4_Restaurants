@@ -53,14 +53,14 @@ namespace tar1.Models
         {
             DBServices dbs = new DBServices();
             dbs.Insert(this);
-           
-        }
+
+        }//*****we can delete this???
 
         public void InsertHighlight()
         {
             DBServices dbs = new DBServices();
             dbs.InsertHighlight(this);
-        }
+        }//*****we can delete this???
 
         public List<Businesses> ReadByCamp(int cusineId)
         {

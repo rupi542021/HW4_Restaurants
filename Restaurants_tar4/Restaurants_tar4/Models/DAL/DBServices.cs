@@ -16,6 +16,12 @@ namespace tar1.Models.DAL
         //static List<Businesses> favourites;
         public SqlDataAdapter da;
         public DataTable dt;
+        public DBServices()
+        {
+            //
+            // TODO: Add constructor logic here
+            //
+        }
 
         public List<Businesses> getBusinesses(int cusineId, int pr)
         {
@@ -80,6 +86,7 @@ namespace tar1.Models.DAL
                 }
             }
         }
+
         public List<Businesses> getAllBusinesses()
         {
             SqlConnection con = null;
@@ -155,7 +162,6 @@ namespace tar1.Models.DAL
             }
         }
 
-
         public Customer checkCustomer(string email, string pass)
         {
             SqlConnection con = null;
@@ -230,15 +236,6 @@ namespace tar1.Models.DAL
             }
         }
 
-
-
-        public DBServices()
-        {
-            //
-            // TODO: Add constructor logic here
-            //
-        }
-
         public SqlConnection connect(String conString)
         {
             // read the connection string from the configuration file
@@ -247,6 +244,7 @@ namespace tar1.Models.DAL
             con.Open();
             return con;
         }
+
         public int Insert(Businesses favourite)
         {
             SqlConnection con;
@@ -280,7 +278,7 @@ namespace tar1.Models.DAL
                     con.Close();
                 }
             }
-        }
+        }//*****we can delete this???
 
         private string BuildInsertCommand(Businesses favourite)
         {
@@ -294,10 +292,8 @@ namespace tar1.Models.DAL
             String prefix = "INSERT INTO [RestaurantsB_2021]" + "([id], [image], [name], [reating], [category], [priceRange], [phone], [address],[cusiId],[url])";
             command = prefix + sb.ToString();
             return command;
-        }
-        //---------------------------------------------------------------------------------
-        // Create the SqlCommand
-        //---------------------------------------------------------------------------------
+        }//*****we can delete this???
+        
         private SqlCommand CreateCommand(String CommandSTR, SqlConnection con)
         {
             SqlCommand cmd = new SqlCommand(); // create the command object
@@ -307,7 +303,6 @@ namespace tar1.Models.DAL
             cmd.CommandType = System.Data.CommandType.Text; // the type of the command, can also be stored procedure
             return cmd;
         }
-
 
         public int InsertCustomer(Customer cust)
         {
@@ -356,6 +351,7 @@ namespace tar1.Models.DAL
             command = prefix + sb.ToString();
             return command;
         }
+
         public int CreateCampaign(Campaign camp)
         {
             SqlConnection con;
@@ -398,7 +394,7 @@ namespace tar1.Models.DAL
             StringBuilder sb = new StringBuilder();
             // use a string builder to create the dynamic string
 
-                sb.AppendFormat("Values('{0}','{1}','{2}','{3}','{4}','{5}')", camp.ResID, camp.ResName, camp.Budget, camp.Clicks, camp.Views, 1);
+                sb.AppendFormat("Values('{0}','{1}','{2}','{3}','{4}','{5}')", camp.ResID, camp.ResName.Replace("'", "''"), camp.Budget, camp.Clicks, camp.Views, 1);
 
                 prefix = "DELETE FROM [CampaignsB_2021] WHERE resid =" + camp.ResID +
                 "INSERT INTO [CampaignsB_2021]" + "([resid],[resName],[budget],[clicks],[views],[status])";
@@ -445,14 +441,6 @@ namespace tar1.Models.DAL
         private string BuildInsertCommand1(Customer cust)
         {
             String command = "";
-            //StringBuilder sb = new StringBuilder();
-            //// use a string builder to create the dynamic string
-
-            //sb.AppendFormat("Values('{0}','{1}','{2}','{3}','{4}','{5}',{6})", cust.Name, cust.Lastname, cust.Email, cust.Phone, cust.Password, cust.Img, cust.PriceRange);
-
-            //String prefix = "INSERT INTO [CustomersB_2021]" + "([name], [fname], [email], [phone], [password],[image],[price_range])";
-            //command = prefix + sb.ToString();
-
             foreach (var ch in cust.Chlist)
             { 
                     String prefix = "INSERT INTO [CustHighlightsB_2021] ([custID], [highlight]) values(IDENT_CURRENT ('CustomersB_2021'),'" + ch + "') ";
@@ -509,6 +497,7 @@ namespace tar1.Models.DAL
             }
             return command;
         }
+
         public int DeleteCamp(int id)
         {
             SqlConnection con;
@@ -549,6 +538,7 @@ namespace tar1.Models.DAL
             String prefix = "UPDATE [CampaignsB_2021] SET [status]=0 WHERE resid =" + id;
             return prefix;
         }
+
         public int UpdateViewCamp(string mode, int id)
         {
             SqlConnection con;
@@ -658,6 +648,7 @@ namespace tar1.Models.DAL
             }
             return command;
         }
+
         public List<Campaign> getCampaigns()
         {
             SqlConnection con = null;
@@ -699,6 +690,7 @@ namespace tar1.Models.DAL
                 }
             }
         }
+
         public List<Businesses> getRestCampaigns(int cusineId)
         {
             SqlConnection con = null;
@@ -746,6 +738,7 @@ namespace tar1.Models.DAL
                 }
             }
         }
+
         public List<Businesses> getRestCampaigns1()
         {
             SqlConnection con = null;
@@ -793,6 +786,7 @@ namespace tar1.Models.DAL
                 }
             }
         }
+
         public int UpdateCampaign(Campaign camp)
         {
             SqlConnection con;

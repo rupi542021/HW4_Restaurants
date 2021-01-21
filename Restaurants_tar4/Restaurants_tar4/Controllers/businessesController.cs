@@ -16,11 +16,9 @@ namespace tar1.Controllers
 {
     public class businessesController : ApiController
     {
-        //GET api/<controller>
         public List<Businesses> Get()
         {
             Businesses restaurant = new Businesses();
-            //List<Businesses> favourites = favourite.Read();
             return restaurant.ReadAll();
         }
         [HttpGet]
@@ -36,15 +34,9 @@ namespace tar1.Controllers
         public List<Businesses> Get(int cusineId, int pr)
         {
             Businesses restaurant = new Businesses();
-            //List<Businesses> favourites = favourite.Read();
             return restaurant.Read(cusineId,pr);
         }
 
-        // GET api/<controller>/5
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
         [HttpGet]
         [Route("api/businesses/checkCust")]
         public HttpResponseMessage GetCustomer(string email, string pass) {
@@ -60,14 +52,9 @@ namespace tar1.Controllers
             }
         }
 
-        // POST api/<controller>
-        //public void Post([FromBody] Businesses favourite)
-        //{
-        //    favourite.Insert();
-        //}
         [HttpPost]
         [Route("api/businesses/favorites")]
-        public HttpResponseMessage Post([FromBody] Businesses favourite)
+        public HttpResponseMessage Post([FromBody] Businesses favourite)//*****we can delete this???
         {
             try
             {
@@ -75,16 +62,14 @@ namespace tar1.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, "");
             }
 
-            catch 
-            {
-
+            catch {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "connecting error");
             }
         }
 
         [HttpPost]
         [Route("api/businesses/highlights")]
-        public HttpResponseMessage Post1([FromBody] Businesses highlight)
+        public HttpResponseMessage Post1([FromBody] Businesses highlight)//*****we can delete this???
         {
             try
             {
@@ -92,9 +77,7 @@ namespace tar1.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, "");
             }
 
-            catch
-            {
-
+            catch{
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "connecting error");
             }
         }
@@ -146,9 +129,6 @@ namespace tar1.Controllers
             return Request.CreateResponse(HttpStatusCode.Created, imgpath);
         }
 
-
-
-        // PUT api/<controller>/5
         public HttpResponseMessage Put([FromBody] Customer c)
         {
             try
@@ -160,11 +140,6 @@ namespace tar1.Controllers
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "connecting error");
             }
-        }
-
-        // DELETE api/<controller>/5
-        public void Delete(int id)
-        {
         }
     }
 }
