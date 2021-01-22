@@ -5,7 +5,6 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
-using System.Web;
 using System.Web.Configuration;
 using tar2.Models;
 
@@ -16,6 +15,7 @@ namespace tar1.Models.DAL
         //static List<Businesses> favourites;
         public SqlDataAdapter da;
         public DataTable dt;
+
         public DBServices()
         {
             //
@@ -318,11 +318,12 @@ namespace tar1.Models.DAL
                 throw (ex);
             }
             string cStr = BuildInsertCommand(cust); // helper method to build the insert string
-            cmd = CreateCommand(cStr, con); // create the command
+            cmd = CreateCommand(cStr, con); //create the command
             try
             {
                 int numEffected = cmd.ExecuteNonQuery(); // execute the command
                 return numEffected;
+                
             }
             catch (Exception ex)
             {
@@ -352,7 +353,35 @@ namespace tar1.Models.DAL
             return command;
         }
 
-        public int CreateCampaign(Campaign camp)
+        public int GetLastCustomerID()
+        {
+            SqlConnection con = null;
+            int commandLastID;
+            try
+            {
+                con = connect("DBConnectionString");
+                String selectSTR = "SELECT TOP 1 * FROM [dbo].[CustomersB_2021] ORDER BY [id] DESC";
+                SqlCommand cmd = new SqlCommand(selectSTR, con);
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                dr.Read(); // קוראת רק שורה אחת
+                commandLastID = Convert.ToInt32(dr["id"]);
+                return commandLastID;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+            }
+        }
+
+    public int CreateCampaign(Campaign camp)
         {
             SqlConnection con;
             SqlCommand cmd;
@@ -407,6 +436,7 @@ namespace tar1.Models.DAL
         {
             SqlConnection con;
             SqlCommand cmd;
+            
             try
             {
                 con = connect("DBConnectionString"); // create the connection
@@ -421,6 +451,7 @@ namespace tar1.Models.DAL
             try
             {
                 int numEffected = cmd.ExecuteNonQuery(); // execute the command
+                
                 return numEffected;
             }
             catch (Exception ex)
@@ -448,6 +479,7 @@ namespace tar1.Models.DAL
             }
             return command;
         }
+
 
         public int UpdateCustomerHighlights(Customer cust)
         {

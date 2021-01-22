@@ -88,8 +88,8 @@ namespace tar1.Controllers
         {
             try
             {
-                cust.Insert();
-                return Request.CreateResponse(HttpStatusCode.OK, cust);
+               Customer c = cust.Insert();
+                return Request.CreateResponse(HttpStatusCode.OK, c);
             }
             catch {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError,"connecting error");

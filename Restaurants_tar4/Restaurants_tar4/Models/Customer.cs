@@ -44,12 +44,14 @@ namespace tar2.Models
         public int PriceRange { get => priceRange; set => priceRange = value; }
         public List<string> Chlist { get => chlist; set => chlist = value; }
 
-        public void Insert()
+        public Customer Insert()
         {
             DBServices dbs = new DBServices();
             dbs.InsertCustomer(this);
             if(this.Chlist.Count>0)
                 dbs.InsertCustomerHighlights(this);
+            this.Id = dbs.GetLastCustomerID();
+            return this;
         }
 
         public Customer Read(string email, string pass) {
