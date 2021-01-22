@@ -203,6 +203,32 @@ namespace tar1.Models.DAL
                 }
             }
         }
+        public bool checkEmailCustomer(string email)
+        {
+            SqlConnection con = null;
+            try
+            {
+                con = connect("DBConnectionString");
+                String selectSTR = "SELECT * FROM CustomersB_2021 where [email]='"+ email+"'";
+                SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                if (dr.HasRows)
+                    return true;
+                else return false;
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+            }
+        }
 
         public List<string> getCustomerHighlights(int id)
         {
@@ -224,7 +250,6 @@ namespace tar1.Models.DAL
             }
             catch (Exception ex)
             {
-                // write to log
                 throw (ex);
             }
             finally
@@ -245,55 +270,6 @@ namespace tar1.Models.DAL
             return con;
         }
 
-        public int Insert(Businesses favourite)
-        {
-            SqlConnection con;
-            SqlCommand cmd;
-            try
-            {
-                con = connect("DBConnectionString"); // create the connection
-            }
-            catch (Exception ex)
-            {
-                // write to log
-                throw (ex);
-            }
-            string cStr = BuildInsertCommand(favourite); // helper method to build the insert string
-            cmd = CreateCommand(cStr, con); // create the command
-            try
-            {
-                int numEffected = cmd.ExecuteNonQuery(); // execute the command
-                return numEffected;
-            }
-            catch (Exception ex)
-            {
-                // write to log
-                throw (ex);
-            }
-            finally
-            {
-                if (con != null)
-                {
-                    // close the db connection
-                    con.Close();
-                }
-            }
-        }//*****we can delete this???
-
-        private string BuildInsertCommand(Businesses favourite)
-        {
-            String command;
-            StringBuilder sb = new StringBuilder();
-            // use a string builder to create the dynamic string
-            //sb.AppendFormat("Values('{0}', '{1}')", student.Name, student.Age);
-            sb.AppendFormat("Values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}',{8},'{9}')", favourite.Id, favourite.Image, favourite.Name.Replace("'","''"), favourite.Reating, favourite.Category, favourite.PriceRange, favourite.Phone, favourite.Address,favourite.CuisineId, favourite.Url);
-            //sb.AppendFormat("Values('{0}', '{1}')", student.Name, student.Age);
-
-            String prefix = "INSERT INTO [RestaurantsB_2021]" + "([id], [image], [name], [reating], [category], [priceRange], [phone], [address],[cusiId],[url])";
-            command = prefix + sb.ToString();
-            return command;
-        }//*****we can delete this???
-        
         private SqlCommand CreateCommand(String CommandSTR, SqlConnection con)
         {
             SqlCommand cmd = new SqlCommand(); // create the command object
@@ -622,65 +598,6 @@ namespace tar1.Models.DAL
 
         }
 
-        public int InsertHighlight(Businesses highlight)
-        {
-            SqlConnection con;
-            SqlCommand cmd;
-            try
-            {
-                con = connect("DBConnectionString"); // create the connection
-            }
-            catch (Exception ex)
-            {
-                // write to log
-                throw (ex);
-            }
-            string cStr = BuildInsertCommand1(highlight); // helper method to build the insert string
-            cmd = CreateCommand(cStr, con); // create the command
-            try
-            {
-                int numEffected = cmd.ExecuteNonQuery(); // execute the command
-                return numEffected;
-            }
-            catch (Exception ex)
-            {
-                // write to log
-                throw (ex);
-            }
-            finally
-            {
-                if (con != null)
-                {
-                    // close the db connection
-                    con.Close();
-                }
-            }
-        }
-
-        private string BuildInsertCommand1(Businesses highlight)
-        {
-            String command="";
-            StringBuilder sb = new StringBuilder();
-            // use a string builder to create the dynamic string
-
-            //sb.AppendFormat("Values('{0}','{1}')", cust.Name, cust.Lastname, cust.Email, cust.Phone, cust.Password, cust.Img);
-
-            //String prefix = "INSERT INTO [CustomersB_2021]" + "([name], [fname], [email], [phone], [password],[image])";
-            //command = prefix + sb.ToString();
-            string [] hArr = {"Wifi", "Serves Alcohol", "Breakfast", "Dinner", "Lunch", "Vegetarian Friendly", "Takeaway Available", "Credit Card", "Delivery", "Cash" };
-            
-            foreach (var h in highlight.Highlights)
-            {
-                if (hArr.Contains(h))
-                {
-                    String prefix = "INSERT INTO HighlightInRestB_2021" + "([resId], [highlight]) values(" + highlight.Id + ", '" + h + "') ";
-                    command += prefix;
-                }
-                
-            }
-            return command;
-        }
-
         public List<Campaign> getCampaigns()
         {
             SqlConnection con = null;
@@ -690,7 +607,7 @@ namespace tar1.Models.DAL
 
                 con = connect("DBConnectionString");
 
-                string selectSTR = "select * from [CampaignsB_2021]";
+                string selectSTR = "select * from [CampaignsB_2021] where [status]=1";
 
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
 

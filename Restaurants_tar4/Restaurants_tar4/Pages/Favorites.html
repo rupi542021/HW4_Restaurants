@@ -51,15 +51,12 @@
             });
             $(".cuisine_btn").click(function () {
                 cusineId = this.id;
-                ajaxCall("GET", "../api/businesses/getRestCamp/" + cusineId , "", getCampSuccess, getCampError);
-                
+                ajaxCall("GET", "../api/businesses/getRestCamp/" + cusineId , "", getCampSuccess, getCampError);   
             });
-
         });
         function getCampSuccess(camps) {
-            console.log(camps);
-            renderHeader(camps);
             let source = "pay"
+            renderHeader(camps);
             renderRest(camps, source);
 
             let api = "../api/businesses/" + cusineId + "/" + pr;
@@ -73,13 +70,13 @@
         }
         function updateSuccess(data) {
             console.log("the camp views updated")
-            console.log(data);
         }
         function updateError(err) {
             console.log(err);
         }
         function getCampError(err) {
             console.log(err);
+            swal("Connection to server are failed :(", "Please Try Again", "warning");
         }
 
         function getFSuccess(data) {
@@ -147,12 +144,10 @@
         }
 
             function getFError(data) {
-                alert("err");
-                console.log(data);
+                swal("Connection to server are failed :(", "Please Try Again", "warning");
             }
         function UpdateClick(restid2updateclick){
             let mode = "click";
-            console.log(mode);
             ajaxCall("PUT", "../api/Campaigns/" + mode + "/" + restid2updateclick, "", updateSuccess, updateError);
         }
     </script>

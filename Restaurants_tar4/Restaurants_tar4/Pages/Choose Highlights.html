@@ -20,8 +20,6 @@
             if (localStorage.getItem("loggedIn") == "") {
                 customerHighlight = [];
                 customerParse = JSON.parse(localStorage.getItem("customer"));
-                console.log(customerParse);
-
                 let str = `<ul>
                     <li><a>Customer Highlights   </a></li>
                     <li style="float:right">
@@ -43,8 +41,8 @@
 
                 customerIn = JSON.parse(localStorage.getItem("loggedIn"));
                 customerHighlight = customerIn.Chlist;
-                selectedRadio = customerIn.PriceRange;
-                let str =`            <div>
+                
+                let str =`<div>
                 <p>Please select your price range:</p>
                 <input type="radio" id="1" value="1" name="pr" onchange="radioPrice(this)" /><label>1</label>
                 <input type="radio" id="2" value="2" name="pr" onchange="radioPrice(this)" /><label>2</label>
@@ -58,14 +56,10 @@
             }            
         });
 
-        function renderUserHighlights(hArr) {
-            customerIn = JSON.parse(localStorage.getItem("loggedIn"));
-            console.log(customerIn);
-            chlist = customerIn.Chlist;
-            
+        function renderUserHighlights(hArr) {           
             let str = "";
             for (var i = 0; i < hArr.length; i++) {
-                if (chlist.includes(hArr[i])) {
+                if (customerHighlight.includes(hArr[i])) {
                     str += `<input type="checkbox" id='` + hArr[i] + `' value='` + hArr[i] + `' checked onchange='cbxHighlight(this)'>
                        <label>`+ hArr[i] + `</label><br>`
                 }
@@ -79,7 +73,6 @@
 
         function renderAllHighlights(hArr) {
             let str = "";
-
             for (var i = 0; i < hArr.length; i++) {
                 str += `<input type="checkbox" id='` + hArr[i] + `' value='` + hArr[i] + `'onchange='cbxHighlight(this)'>
                        <label>`+ hArr[i] + `</label><br>`
@@ -88,30 +81,23 @@
         }
 
         function cbxHighlight(cbx) {
-            console.log(cbx.id);
-            console.log(cbx.checked);
             if (cbx.checked) {
                 customerHighlight.push(cbx.id);
-                console.log(customerHighlight);
             }
             else {
                 customerHighlight = customerHighlight.filter((item) => item !== cbx.id);
-                console.log(customerHighlight);
             }
         }
 
         function btnPostHighlight(){
             if (localStorage.getItem("loggedIn") == "") {
                 customerParse.ChList = customerHighlight;
-                console.log(customerParse);
                 ajaxCall("POST", "../api/businesses/cusTomer", JSON.stringify(customerParse), postSuccess, postError);
             }
-
             else {
                 customerIn = JSON.parse(localStorage.getItem("loggedIn"));
                 customerIn.Chlist = customerHighlight;
                 customerIn.PriceRange = selectedRadio;
-                console.log(customerIn);
                 ajaxCall("PUT", "../api/businesses/", JSON.stringify(customerIn), putSuccess, putError);
             }
         }
@@ -122,6 +108,7 @@
         }
         function putError(err) {
             console.log(err);
+            swal("Updateing preferences failed :(", "Please Try Again", "warning");
         }
         function postSuccess(data) {
             console.log(data);
@@ -131,7 +118,7 @@
 
         function postError(err) {
             console.log(err);
-            swal("Connection to server are failed :(", "Please Try Again", "danger");
+            swal("Connection to server are failed :(", "Please Try Again", "warning");
         }
         function radioPrice(rb) {
             selectedRadio = rb.id;

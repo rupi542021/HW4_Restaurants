@@ -41,7 +41,6 @@ namespace Restaurants_tar4.Controllers
 
             catch
             {
-
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "connecting error");
             }
         }

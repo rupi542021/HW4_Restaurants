@@ -35,27 +35,22 @@
             $("#createDiv").hide();
 
             buttonEvents();
-
         });
         function getRestSuccess(AllRest) {
             AllCampaignsID = [];
             restWithOutCamp = [];
             for (var i = 0; i < AllCampaigns.length; i++) {
-                if (AllCampaigns[i].Status==1)
                     AllCampaignsID.push(AllCampaigns[i].ResID)
             }
-
             for (var i = 0; i < AllRest.length; i++) {
                 if (!AllCampaignsID.includes(AllRest[i].Id))
                     restWithOutCamp.push(AllRest[i])
             }
-            console.log(restWithOutCamp);
             let str = `<select name="campaing" id="campaing" class="selectpicker" required><option value="">Choose</option>`; 
             for (var i = 0; i < restWithOutCamp.length; i++) {
                 str += "<option value=" + restWithOutCamp[i].Id + ">" + restWithOutCamp[i].Name+"</option>"
             }
             str += `</select>`;
-
             $("#selectRest").html(str);
         }
 
@@ -106,6 +101,8 @@
             ajaxCall("DELETE", "../api/Campaigns/" + id, "", deleteSuccess, deleteError);
         }
         function deleteError(err) {
+            swal("Delete campaign has failed :(", "Please Try Again", "warning");
+
             console.log(err);
         }
         function onSubmitFunc() {
@@ -130,19 +127,16 @@
                     Status: 1,
                     Balance: $("#budgetCreate").val()
                 }
-            
-            console.log(CampCreateNew)
             ajaxCall("POST", "../api/Campaigns", JSON.stringify(CampCreateNew), postSuccess, postError);
             return false;
         }
         function postSuccess(campsdata) {
-            console.log(campsdata);
             $("#createDiv").hide();
             $("#pForm").show();
             $("#CreatebtnDiv").show();
             swal("The Campaign Created Successfuly!", "Great Job", "success");
             tbl.clear();
-            let AllCampaigns = campsdata.filter(camp => camp.Status == 1);
+            let AllCampaigns = campsdata;
             redrawTable(tbl, AllCampaigns);
             buttonEvents();
             $("#editDiv").hide();
@@ -152,7 +146,7 @@
         }
         function postError(err) {
             console.log(err)
-            swal("Connection problem");
+            swal("Connection to server are failed :(", "Please Try Again", "warning");
         }
         function populateFields(campId) {
             campaign = getCampaign(campId);
@@ -166,33 +160,28 @@
             return null;
         }
 
-        // success callback function after update
         function updateSuccess(campsdata) {
-            //console.log("aftreUpdate", campsdata);
             tbl.clear();
             swal("Updated Successfuly!", "Great Job", "success");
-            let AllCampaigns = campsdata.filter(camp => camp.Status == 1);
+            let AllCampaigns = campsdata;
             redrawTable(tbl, AllCampaigns);
             buttonEvents();
             $("#editDiv").hide();
             document.getElementById('budget').value = '';
-            
         }
         function updateError(err){
             swal("Error: update failed");
         }
 
-        // success callback function after delete
         function deleteSuccess(campsdata) {
             tbl.clear();
-            let AllCampaigns = campsdata.filter(camp => camp.Status == 1);
+            let AllCampaigns = campsdata;
             redrawTable(tbl, AllCampaigns);
             buttonEvents();
             $("#editDiv").hide();
             swal("Deleted Successfuly!", "Great Job", "success");
         }
 
-        // redraw a datatable with new data
         function redrawTable(tbl, data) {
             tbl.clear();
             for (var i = 0; i < data.length; i++) {
@@ -201,16 +190,9 @@
             tbl.draw();
         }
 
-        // this function is activated in case of a success
         function getSuccess(campsdata) {
-            AllCampaigns = campsdata.filter(camp => camp.Status == 1);
-            DeletedCampaigns = campsdata.filter(camp => camp.Status == 0);
+            AllCampaigns = campsdata;
             console.log(AllCampaigns);
-            DeletedCampaignsID = [];
-            for (var i = 0; i < DeletedCampaigns.length; i++) {
-                DeletedCampaignsID.push(DeletedCampaigns[i].ResID)
-            }
-            console.log(DeletedCampaignsID);
             try {
                 tbl = $('#campaignTable').DataTable({
                     data: AllCampaigns,
@@ -233,17 +215,13 @@
                         { data: "Views" },
                     ],
                 });
-                // buttonEvents();
             }
-
             catch (err) {
-                alert(err);
+                swal("Error: " + err.responseJSON.ExceptionMessage);
             }
         }
-
-        // this function is activated in case of a failure
         function getError(err) {
-            swal("Error: " + err);
+            swal("Error: " + err.responseJSON.ExceptionMessage);
         }
 
     </script>

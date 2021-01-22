@@ -51,34 +51,20 @@ namespace tar1.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "checking error");
             }
         }
-
-        [HttpPost]
-        [Route("api/businesses/favorites")]
-        public HttpResponseMessage Post([FromBody] Businesses favourite)//*****we can delete this???
+        [HttpGet]
+        [Route("api/businesses/checkCustEmail")]
+        public HttpResponseMessage CheckEmailCustomer(string email)
         {
+            bool check;
+            Customer c = new Customer();
             try
             {
-                favourite.Insert();
-                return Request.CreateResponse(HttpStatusCode.OK, "");
+                check = c.Read1(email);
+                return Request.CreateResponse(HttpStatusCode.OK, check);
             }
-
-            catch {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "connecting error");
-            }
-        }
-
-        [HttpPost]
-        [Route("api/businesses/highlights")]
-        public HttpResponseMessage Post1([FromBody] Businesses highlight)//*****we can delete this???
-        {
-            try
+            catch
             {
-                highlight.InsertHighlight();
-                return Request.CreateResponse(HttpStatusCode.OK, "");
-            }
-
-            catch{
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "connecting error");
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "checking error");
             }
         }
 
@@ -104,29 +90,28 @@ namespace tar1.Controllers
             string imageLink;
             var httpContext = HttpContext.Current;
             string imgpath = "";
-
-            // Check for any uploaded file
-            if (httpContext.Request.Files.Count > 0)
-            {
-                HttpPostedFile httpPostedFile = httpContext.Request.Files[0];
-                // this is an example of how you can extract addional values from the Ajax call
-                string name = httpContext.Request.Form["name"];
-
-                if (httpPostedFile != null)
+            try {
+                if (httpContext.Request.Files.Count > 0)
                 {
-                    // Construct file save path
-                    //var fileSavePath = Path.Combine(HostingEnvironment.MapPath(ConfigurationManager.AppSettings["fileUploadFolder"]), httpPostedFile.FileName);
-                    string fname = httpPostedFile.FileName.Split('\\').Last();
-                    string sfname = fname.Split('.').Last();
-                    var fileSavePath = Path.Combine(HostingEnvironment.MapPath("~/uploadedFiles"), name + "." + sfname);
-                    // Save the uploaded file
-                    httpPostedFile.SaveAs(fileSavePath);
-                    imgpath = fileSavePath;
-                    imageLink = $"uploadedFiles/{name}.{sfname}";
+                    HttpPostedFile httpPostedFile = httpContext.Request.Files[0];
+                    string name = httpContext.Request.Form["name"];
+
+                    if (httpPostedFile != null)
+                    {
+                        string fname = httpPostedFile.FileName.Split('\\').Last();
+                        string sfname = fname.Split('.').Last();
+                        var fileSavePath = Path.Combine(HostingEnvironment.MapPath("~/uploadedFiles"), name + "." + sfname);
+                        httpPostedFile.SaveAs(fileSavePath);
+                        imgpath = fileSavePath;
+                        imageLink = $"uploadedFiles/{name}.{sfname}";
+                    }
                 }
+                return Request.CreateResponse(HttpStatusCode.Created, imgpath);
             }
-            // Return status code
-            return Request.CreateResponse(HttpStatusCode.Created, imgpath);
+            catch
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "connecting error");
+            }
         }
 
         public HttpResponseMessage Put([FromBody] Customer c)

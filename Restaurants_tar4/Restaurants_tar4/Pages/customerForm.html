@@ -10,14 +10,13 @@
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <link href="StyleSheet.css" rel="stylesheet" />
-    
+
     <meta charset="utf-8" />
     <title></title>
     <script>
         $(document).ready(function () {
             selectedRadio = 0;
-            if (localStorage.getItem("customer") != "")
-            {
+            if (localStorage.getItem("customer") != "") {
                 let customer = JSON.parse(localStorage.getItem("customer"))
                 $("#nameTB").val(customer.Name);
                 $("#lnameTB").val(customer.Lastname);
@@ -26,13 +25,24 @@
                 $("#passwordTB").val(customer.Password);
             }
             $("#pForm").submit(function (event) {
+                event.preventDefault();
+                emailCust = $("#emailTB").val();
+                ajaxCall("GET", "../api/businesses/checkCustEmail?email=" + emailCust, "", getSuccess, getError);
+            });
+        });
+        function getSuccess(check) {
+            if (check)
+                swal("The Email is already exist!", "Please enter another one","warning");
+            else {
                 uploadimg();
                 addCustomer();
-                event.preventDefault();
                 window.location.href = 'Choose Highlights.html';
-            }); 
-        });
-
+            }
+        }
+        function getError(err) {
+            console.log(err);
+            swal("Connection to server are failed :(", "Please Try Again", "warning");
+        }
         function addCustomer() {
             customer = {
                 Name: $("#nameTB").val(),
@@ -43,11 +53,11 @@
                 Img: imgName,
                 PriceRange: selectedRadio
             }
-          
+
             let customerTostring = JSON.stringify(customer);
             localStorage.setItem("customer", customerTostring);
             localStorage.setItem("loggedIn", "");
-            
+
         }
 
         function uploadimg() {
@@ -68,16 +78,16 @@
                     error: imgerror
                 });
             }
-            else { imgName = ""}
-           
+            else { imgName = "" }
+
             return false;
         }
         function imgsucces(dataimg) {
             alert("the image was been uploaded!");
         }
         function imgerror(errmsg) {
-            alert("the image uploading has failed!");
             console.log(errmsg);
+            swal("the image uploading has failed! :(", "Please Try Again", "warning");
         }
 
         function radioPrice(rb) {

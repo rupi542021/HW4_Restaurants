@@ -67,7 +67,6 @@
         }
     </style>
     <script>
-
         $(document).ready(function () {
             $("#loginForm").submit(checkCustomer);
             $(".btnGuest").click(function () {
@@ -82,8 +81,6 @@
         function checkCustomer() {
             let customerEmail = $("#uEmailTB").val();
             let customerPass = $("#uPassTB").val();
-            console.log(customerEmail);
-            console.log(customerPass);
             ajaxCall("GET", "../api/businesses/checkCust?email=" + customerEmail + "&pass=" + customerPass, "", getSuccess, getError);
             return false;
         }
@@ -100,7 +97,8 @@
         }
 
         function getError(err) {
-            swal("Logged in failed :(", "Please Try Again", "danger");
+            console.log(err);
+            swal("Logged in failed :(", "Please Try Again", "warning");
         }
     </script>
 </head>

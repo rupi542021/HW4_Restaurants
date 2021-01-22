@@ -215,7 +215,6 @@
     <Content Include="Pages\default.jpg" />
     <Content Include="Pages\download.png" />
     <Content Include="Pages\Favorites.html" />
-    <Content Include="Pages\Index.html" />
     <Content Include="Pages\katarina-sikuljak-BeEnOzyIBsU-unsplash.jpg" />
     <Content Include="Pages\Login.html" />
     <Content Include="Pages\StyleSheet.css" />

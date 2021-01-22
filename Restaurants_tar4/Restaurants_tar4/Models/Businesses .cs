@@ -49,19 +49,6 @@ namespace tar1.Models
         public string Url { get => url; set => url = value; }
         public List<string> Highlights { get => highlights; set => highlights = value; }
 
-        public void Insert()
-        {
-            DBServices dbs = new DBServices();
-            dbs.Insert(this);
-
-        }//*****we can delete this???
-
-        public void InsertHighlight()
-        {
-            DBServices dbs = new DBServices();
-            dbs.InsertHighlight(this);
-        }//*****we can delete this???
-
         public List<Businesses> ReadByCamp(int cusineId)
         {
             DBServices dbs = new DBServices();
