@@ -38,19 +38,20 @@
                             <span class="glyphicon glyphicon-circle-arrow-right"></span> Back</a></li>
                 </ul><br />`
                 document.getElementById("backbtn").innerHTML = str1;
-
+                
                 customerIn = JSON.parse(localStorage.getItem("loggedIn"));
+                selectedRadio = customerIn.PriceRange;
                 customerHighlight = customerIn.Chlist;
                 
-                let str =`<div>
-                <p>Please select your price range:</p>
-                <input type="radio" id="1" value="1" name="pr" onchange="radioPrice(this)" /><label>1</label>
-                <input type="radio" id="2" value="2" name="pr" onchange="radioPrice(this)" /><label>2</label>
-                <input type="radio" id="3" value="3" name="pr" onchange="radioPrice(this)" /><label>3</label>
-                <input type="radio" id="4" value="4" name="pr" onchange="radioPrice(this)" /><label>4</label>
-                <input type="radio" id="5" value="5" name="pr" onchange="radioPrice(this)" /><label>5</label>
-            </div>
-            <br />`
+                let str = `<div>
+                <p>Please select your price range:</p>`;
+                for (var i = 1; i < 6; i++) {
+                    if (selectedRadio==i) 
+                        str += `<input type="radio" id="` + i + `" value="` + i + `" name="pr" onchange="radioPrice(this)" checked/><label>` + i + `</label>`;
+                    else
+                        str += `<input type="radio" id="` + i + `" value="` + i + `" name="pr" onchange="radioPrice(this)" /><label>` + i +`</label>`
+                }
+                str += `</div><br />`;
                 document.getElementById("prUpdate").innerHTML = str;
                 renderUserHighlights(hArr);
             }            
