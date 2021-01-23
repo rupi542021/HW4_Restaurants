@@ -62,8 +62,9 @@ namespace Restaurants_tar4.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "connecting error");
             }
         }
+
         [HttpPut]
-        [Route("api/Campaigns/{mode}/{id}")]
+        [Route("api/Campaigns/{mode}/{id}")] // updating views or clicks (depends on "mode" argument)
         public HttpResponseMessage Put(string mode,int id)
         {
             try

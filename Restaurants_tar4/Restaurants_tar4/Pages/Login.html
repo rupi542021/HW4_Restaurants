@@ -87,7 +87,7 @@
 
         function getSuccess(c) {
             console.log(c);
-            if (c) {
+            if (c != null) {
                 let customerTostring = JSON.stringify(c);
                 localStorage.setItem("loggedIn", customerTostring);
                 swal(c.Name + " You are logged in!", "Thank you :)", "success").then(function () { window.location.href = 'Favorites.html' });

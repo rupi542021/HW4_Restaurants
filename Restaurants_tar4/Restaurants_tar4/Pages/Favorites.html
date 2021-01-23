@@ -14,10 +14,11 @@
     <link href="StyleSheet.css" rel="stylesheet" />
     <script>
         $(document).ready(function () {
-            if (localStorage.getItem("loggedIn") != "") {
+            if (localStorage.getItem("loggedIn") != "") // the customer is logged in
+            {
                 customerIn = JSON.parse(localStorage.getItem("loggedIn"));
                 pr = customerIn.PriceRange;
-                if (customerIn.Chlist.length == 0)
+                if (customerIn.Chlist.length == 0) // the customer does not have any of preferences
                     hlist = null;
                 else
                     hlist = customerIn.Chlist;
@@ -33,7 +34,8 @@
                 </ul>`;
                 $("#ph1").html(str);
             }
-            else {
+            else // guest
+            {
                 let str = `<ul>
                     <li><a href="Favorites.html">Hello Guest!   </a></li>
                     <li><a href="Login.html">
@@ -62,7 +64,8 @@
             let api = "../api/businesses/" + cusineId + "/" + pr;
             ajaxCall("GET", api, "", getFSuccess, getFError);
 
-            for (var i = 0; i < camps.length; i++) {
+            for (var i = 0; i < camps.length; i++) // updating campaign's views
+            {
                 let restId2Update = camps[i].Id;
                 let mode = "view";
                 ajaxCall("PUT", "../api/Campaigns/" + mode +"/" + restId2Update,"", updateSuccess, updateError);
@@ -82,20 +85,23 @@
         function getFSuccess(data) {
             console.log(data);
             let source = "organic"
-            if (hlist!= null) {
+            if (hlist != null) // customer with highlights list
+            {
                 restaurantsByHighLights = [];
                 for (var i = 0; i < hlist.length; i++)
                     for (var j = 0; j < data.length; j++)
                         if (data[j].Highlights.includes(hlist[i]))
                             if (!restaurantsByHighLights.includes(data[j]))
                                 restaurantsByHighLights.push(data[j]);
-                restaurantsByHighLights.sort((a, b) => (a.Reating > b.Reating) ? -1 : 1)
+                restaurantsByHighLights.sort((a, b) => (a.Reating > b.Reating) ? -1 : 1) // sorting by rating
                 renderRest(restaurantsByHighLights, source)
             }
-            else {
+            else // guest or customer without prefernces
+            {
                 renderRest(data, source);
             }
         }
+
         function renderHeader(arr) {
             str = "";
             if (arr.length == 0) {

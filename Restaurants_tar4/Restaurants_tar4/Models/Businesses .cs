@@ -53,7 +53,7 @@ namespace tar1.Models
         {
             DBServices dbs = new DBServices();
             List<Businesses> restc = dbs.getRestCampaigns(cusineId);
-            if (restc.Count == 0)
+            if (restc.Count < 3)
             {
                 restc = dbs.getRestCampaigns1();
             }

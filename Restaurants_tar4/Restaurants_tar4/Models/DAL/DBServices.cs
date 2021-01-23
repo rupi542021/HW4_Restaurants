@@ -12,15 +12,11 @@ namespace tar1.Models.DAL
 {
     public class DBServices
     {
-        //static List<Businesses> favourites;
         public SqlDataAdapter da;
         public DataTable dt;
 
         public DBServices()
         {
-            //
-            // TODO: Add constructor logic here
-            //
         }
 
         public List<Businesses> getBusinesses(int cusineId, int pr)
@@ -39,43 +35,29 @@ namespace tar1.Models.DAL
                 {
                     selectSTR = "select * from [RestaurantsB_2021] where cusiId=" + cusineId + " and priceRange=" + pr + " ORDER BY [reating] DESC";
                 }
-                //else if (pr == 0 && hList != null)
-                //{
-                //    String selectSTR = "";
-                //    foreach (var h in hList)
-                //    {
-                //        selectSTR += "select * from [RestaurantsB_2021] inner join " +
-                //       "[HighlightInRestB_2021] on[RestaurantsB_2021].id =[HighlightInRestB_2021].resId " +
-                //       "where[HighlightInRestB_2021].highlight ="+ h +"and[RestaurantsB_2021].cusiId =" + cusineId + " ";
-                //    }
-                   
-                //}
-                // String selectSTR = "SELECT * FROM RestaurantsB_2021";
-                SqlCommand cmd = new SqlCommand(selectSTR, con);
 
+                SqlCommand cmd = new SqlCommand(selectSTR, con);
                 SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); 
                 while (dr.Read())
                 { 
-                    Businesses favourite = new Businesses();
-                    favourite.Id = Convert.ToInt32(dr["id"]);
-                    favourite.Image = (string)dr["image"];
-                    favourite.Name = (string)dr["name"];
-                    favourite.Reating = (float)Convert.ToDouble(dr["reating"]);
-                    favourite.Category = (string)dr["category"];
-                    favourite.PriceRange = Convert.ToInt32(dr["priceRange"]);
-                    favourite.Phone = (string)dr["phone"];
-                    favourite.Address = (string)dr["address"];
-                    favourite.CuisineId = Convert.ToInt32(dr["cusiId"]);
-                    favourite.Url= (string)dr["url"];
-                    int id = Convert.ToInt32(dr["id"]);
-                    favourite.Highlights = getRestHighlights(id);
-                    rList.Add(favourite);
+                    Businesses restaurant = new Businesses();
+                    restaurant.Id = Convert.ToInt32(dr["id"]);
+                    restaurant.Image = (string)dr["image"];
+                    restaurant.Name = (string)dr["name"];
+                    restaurant.Reating = (float)Convert.ToDouble(dr["reating"]);
+                    restaurant.Category = (string)dr["category"];
+                    restaurant.PriceRange = Convert.ToInt32(dr["priceRange"]);
+                    restaurant.Phone = (string)dr["phone"];
+                    restaurant.Address = (string)dr["address"];
+                    restaurant.CuisineId = Convert.ToInt32(dr["cusiId"]);
+                    restaurant.Url= (string)dr["url"];
+                    restaurant.Highlights = getRestHighlights(restaurant.Id);
+                    rList.Add(restaurant);
                 }
                 return rList;
             }
             catch (Exception ex)
             {
-                // write to log
                 throw (ex);
             }
             finally
@@ -100,25 +82,23 @@ namespace tar1.Models.DAL
                 SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                 while (dr.Read())
                 {
-                    Businesses favourite = new Businesses();
-                    favourite.Id = Convert.ToInt32(dr["id"]);
-                    favourite.Image = (string)dr["image"];
-                    favourite.Name = (string)dr["name"];
-                    favourite.Reating = (float)Convert.ToDouble(dr["reating"]);
-                    favourite.Category = (string)dr["category"];
-                    favourite.PriceRange = Convert.ToInt32(dr["priceRange"]);
-                    favourite.Phone = (string)dr["phone"];
-                    favourite.Address = (string)dr["address"];
-                    favourite.CuisineId = Convert.ToInt32(dr["cusiId"]);
-                    int id = Convert.ToInt32(dr["id"]);
-                    favourite.Highlights = getRestHighlights(id);
-                    rList.Add(favourite);
+                    Businesses restaurant = new Businesses();
+                    restaurant.Id = Convert.ToInt32(dr["id"]);
+                    restaurant.Image = (string)dr["image"];
+                    restaurant.Name = (string)dr["name"];
+                    restaurant.Reating = (float)Convert.ToDouble(dr["reating"]);
+                    restaurant.Category = (string)dr["category"];
+                    restaurant.PriceRange = Convert.ToInt32(dr["priceRange"]);
+                    restaurant.Phone = (string)dr["phone"];
+                    restaurant.Address = (string)dr["address"];
+                    restaurant.CuisineId = Convert.ToInt32(dr["cusiId"]);
+                    restaurant.Highlights = getRestHighlights(restaurant.Id);
+                    rList.Add(restaurant);
                 }
                 return rList;
             }
             catch (Exception ex)
             {
-                // write to log
                 throw (ex);
             }
             finally
@@ -130,7 +110,7 @@ namespace tar1.Models.DAL
             }
         }
 
-        public List<string> getRestHighlights(int id)
+        public List<string> getRestHighlights(int id) // get restaurant's highlights
         {
             SqlConnection con = null;
             List<string> rhList = new List<string>();
@@ -139,7 +119,6 @@ namespace tar1.Models.DAL
                 con = connect("DBConnectionString");
                 String selectSTR = "select * from [HighlightInRestB_2021] where resId = " + id;
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
-
                 SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                 while (dr.Read())
                 {
@@ -150,7 +129,6 @@ namespace tar1.Models.DAL
             }
             catch (Exception ex)
             {
-                // write to log
                 throw (ex);
             }
             finally
@@ -171,7 +149,6 @@ namespace tar1.Models.DAL
                 con = connect("DBConnectionString");
                 String selectSTR = "SELECT * FROM CustomersB_2021";
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
-
                 SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                 while (dr.Read())
                 {
@@ -183,6 +160,7 @@ namespace tar1.Models.DAL
                         c.Email = (string)dr["email"];
                         c.Phone = (string)dr["phone"];
                         c.Password = (string)dr["password"];
+                        c.Img = (string)dr["image"];
                         c.PriceRange = Convert.ToInt32(dr["price_range"]);
                         c.Chlist =getCustomerHighlights(c.Id);
                         return c;
@@ -192,7 +170,6 @@ namespace tar1.Models.DAL
             }
             catch (Exception ex)
             {
-                // write to log
                 throw (ex);
             }
             finally
@@ -211,7 +188,6 @@ namespace tar1.Models.DAL
                 con = connect("DBConnectionString");
                 String selectSTR = "SELECT * FROM CustomersB_2021 where [email]='"+ email+"'";
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
-
                 SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                 if (dr.HasRows)
                     return true;
@@ -286,24 +262,23 @@ namespace tar1.Models.DAL
             SqlCommand cmd;
             try
             {
-                con = connect("DBConnectionString"); // create the connection
+                con = connect("DBConnectionString");
             }
             catch (Exception ex)
             {
-                // write to log
+
                 throw (ex);
             }
-            string cStr = BuildInsertCommand(cust); // helper method to build the insert string
-            cmd = CreateCommand(cStr, con); //create the command
+            string cStr = BuildInsertCommand(cust);
+            cmd = CreateCommand(cStr, con);
             try
             {
-                int numEffected = cmd.ExecuteNonQuery(); // execute the command
+                int numEffected = cmd.ExecuteNonQuery();
                 return numEffected;
                 
             }
             catch (Exception ex)
             {
-                // write to log
                 throw (ex);
             }
             finally
@@ -320,8 +295,6 @@ namespace tar1.Models.DAL
         {
             String command;
             StringBuilder sb = new StringBuilder();
-            // use a string builder to create the dynamic string
-
             sb.AppendFormat("Values('{0}','{1}','{2}','{3}','{4}','{5}',{6})", cust.Name, cust.Lastname, cust.Email, cust.Phone, cust.Password,cust.Img, cust.PriceRange);
 
             String prefix = "INSERT INTO [CustomersB_2021]" + "([name], [fname], [email], [phone], [password],[image],[price_range])";
@@ -339,13 +312,12 @@ namespace tar1.Models.DAL
                 String selectSTR = "SELECT TOP 1 * FROM [dbo].[CustomersB_2021] ORDER BY [id] DESC";
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
                 SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
-                dr.Read(); // קוראת רק שורה אחת
+                dr.Read(); // read single row
                 commandLastID = Convert.ToInt32(dr["id"]);
                 return commandLastID;
             }
             catch (Exception ex)
             {
-                // write to log
                 throw (ex);
             }
             finally
@@ -415,31 +387,29 @@ namespace tar1.Models.DAL
             
             try
             {
-                con = connect("DBConnectionString"); // create the connection
+                con = connect("DBConnectionString");
             }
             catch (Exception ex)
             {
-                // write to log
                 throw (ex);
             }
-            string cStr = BuildInsertCommand1(cust); // helper method to build the insert string
-            cmd = CreateCommand(cStr, con); // create the command
+            string cStr = BuildInsertCommand1(cust);
+            cmd = CreateCommand(cStr, con);
             try
             {
-                int numEffected = cmd.ExecuteNonQuery(); // execute the command
+                int numEffected = cmd.ExecuteNonQuery();
                 
                 return numEffected;
             }
             catch (Exception ex)
             {
-                // write to log
+
                 throw (ex);
             }
             finally
             {
                 if (con != null)
                 {
-                    // close the db connection
                     con.Close();
                 }
             }
@@ -463,30 +433,28 @@ namespace tar1.Models.DAL
             SqlCommand cmd;
             try
             {
-                con = connect("DBConnectionString"); // create the connection
+                con = connect("DBConnectionString");
             }
             catch (Exception ex)
             {
-                // write to log
                 throw (ex);
             }
-            string cStr = BuildInsertCommand2(cust); // helper method to build the insert string
-            cmd = CreateCommand(cStr, con); // create the command
+            string cStr = BuildInsertCommand2(cust);
+            cmd = CreateCommand(cStr, con);
             try
             {
-                int numEffected = cmd.ExecuteNonQuery(); // execute the command
+                int numEffected = cmd.ExecuteNonQuery();
                 return numEffected;
             }
             catch (Exception ex)
             {
-                // write to log
+
                 throw (ex);
             }
             finally
             {
                 if (con != null)
                 {
-                    // close the db connection
                     con.Close();
                 }
             }
@@ -506,36 +474,74 @@ namespace tar1.Models.DAL
             return command;
         }
 
-        public int DeleteCamp(int id)
+
+        public int DeleteCustomerHighlights(Customer cust)
         {
             SqlConnection con;
             SqlCommand cmd;
             try
             {
-                con = connect("DBConnectionString"); // create the connection
+                con = connect("DBConnectionString");
             }
             catch (Exception ex)
             {
-                // write to log
                 throw (ex);
             }
-            string cStr = BuildDeleteCommand(id); // helper method to build the insert string
-            cmd = CreateCommand(cStr, con); // create the command
+            string cStr = BuildDeleteCustomerHighloghtsCommand(cust);
+            cmd = CreateCommand(cStr, con);
             try
             {
-                int numEffected = cmd.ExecuteNonQuery(); // execute the command
+                int numEffected = cmd.ExecuteNonQuery();
                 return numEffected;
             }
             catch (Exception ex)
             {
-                // write to log
+
                 throw (ex);
             }
             finally
             {
                 if (con != null)
                 {
-                    // close the db connection
+                    con.Close();
+                }
+            }
+        }
+
+        private string BuildDeleteCustomerHighloghtsCommand(Customer cust)
+        {
+            String command = "DELETE FROM [CustHighlightsB_2021] WHERE custID = " + cust.Id +
+                " update [CustomersB_2021] set price_range=" + cust.PriceRange + " where id=" + cust.Id;
+            return command;
+        }
+
+        public int DeleteCamp(int id)
+        {
+            SqlConnection con;
+            SqlCommand cmd;
+            try
+            {
+                con = connect("DBConnectionString");
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+            string cStr = BuildDeleteCommand(id);
+            cmd = CreateCommand(cStr, con);
+            try
+            {
+                int numEffected = cmd.ExecuteNonQuery();
+                return numEffected;
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
                     con.Close();
                 }
             }
@@ -553,30 +559,27 @@ namespace tar1.Models.DAL
             SqlCommand cmd;
             try
             {
-                con = connect("DBConnectionString"); // create the connection
+                con = connect("DBConnectionString");
             }
             catch (Exception ex)
             {
-                // write to log
                 throw (ex);
             }
-            string cStr = BuildUpdateCommand(mode,id); // helper method to build the insert string
-            cmd = CreateCommand(cStr, con); // create the command
+            string cStr = BuildUpdateCommand(mode,id);
+            cmd = CreateCommand(cStr, con);
             try
             {
-                int numEffected = cmd.ExecuteNonQuery(); // execute the command
+                int numEffected = cmd.ExecuteNonQuery();
                 return numEffected;
             }
             catch (Exception ex)
             {
-                // write to log
                 throw (ex);
             }
             finally
             {
                 if (con != null)
                 {
-                    // close the db connection
                     con.Close();
                 }
             }
@@ -628,7 +631,6 @@ namespace tar1.Models.DAL
             }
             catch (Exception ex)
             {
-                // write to log
                 throw (ex);
             }
             finally
@@ -649,34 +651,33 @@ namespace tar1.Models.DAL
                 con = connect("DBConnectionString");
                 string selectSTR = "";
 
+                // get top 3 specific cusine's campaigns with the highest budgets
                  selectSTR = "select TOP 3 [id],[image],[name],[reating],[category],[priceRange],[phone],[address],[cusiId],[url]" +
                 " from [dbo].[RestaurantsB_2021] r inner join [dbo].[CampaignsB_2021] c" +
-                " on c.resid=r.id where r.cusiId="+cusineId +"and c.status=1 ORDER BY c.budget DESC";
+                " on c.resid=r.id where r.cusiId=" + cusineId +"and c.status=1 ORDER BY c.budget DESC";
 
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
                 SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                 while (dr.Read())
                 {
-                    Businesses favourite = new Businesses();
-                    favourite.Id = Convert.ToInt32(dr["id"]);
-                    favourite.Image = (string)dr["image"];
-                    favourite.Name = (string)dr["name"];
-                    favourite.Reating = (float)Convert.ToDouble(dr["reating"]);
-                    favourite.Category = (string)dr["category"];
-                    favourite.PriceRange = Convert.ToInt32(dr["priceRange"]);
-                    favourite.Phone = (string)dr["phone"];
-                    favourite.Address = (string)dr["address"];
-                    favourite.CuisineId = Convert.ToInt32(dr["cusiId"]);
-                    favourite.Url = (string)dr["url"];
-                    int id = Convert.ToInt32(dr["id"]);
-                    favourite.Highlights = getRestHighlights(id);
-                    rList.Add(favourite);
+                    Businesses camp = new Businesses();
+                    camp.Id = Convert.ToInt32(dr["id"]);
+                    camp.Image = (string)dr["image"];
+                    camp.Name = (string)dr["name"];
+                    camp.Reating = (float)Convert.ToDouble(dr["reating"]);
+                    camp.Category = (string)dr["category"];
+                    camp.PriceRange = Convert.ToInt32(dr["priceRange"]);
+                    camp.Phone = (string)dr["phone"];
+                    camp.Address = (string)dr["address"];
+                    camp.CuisineId = Convert.ToInt32(dr["cusiId"]);
+                    camp.Url = (string)dr["url"];
+                    camp.Highlights = getRestHighlights(camp.Id);
+                    rList.Add(camp);
                 }
                 return rList;
             }
             catch (Exception ex)
             {
-                // write to log
                 throw (ex);
             }
             finally
@@ -705,26 +706,24 @@ namespace tar1.Models.DAL
                 SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                     while (dr.Read())
                     {
-                        Businesses favourite = new Businesses();
-                        favourite.Id = Convert.ToInt32(dr["id"]);
-                        favourite.Image = (string)dr["image"];
-                        favourite.Name = (string)dr["name"];
-                        favourite.Reating = (float)Convert.ToDouble(dr["reating"]);
-                        favourite.Category = (string)dr["category"];
-                        favourite.PriceRange = Convert.ToInt32(dr["priceRange"]);
-                        favourite.Phone = (string)dr["phone"];
-                        favourite.Address = (string)dr["address"];
-                        favourite.CuisineId = Convert.ToInt32(dr["cusiId"]);
-                        favourite.Url = (string)dr["url"];
-                        int id = Convert.ToInt32(dr["id"]);
-                        favourite.Highlights = getRestHighlights(id);
-                        rList.Add(favourite);
+                        Businesses camp = new Businesses();
+                        camp.Id = Convert.ToInt32(dr["id"]);
+                        camp.Image = (string)dr["image"];
+                        camp.Name = (string)dr["name"];
+                        camp.Reating = (float)Convert.ToDouble(dr["reating"]);
+                        camp.Category = (string)dr["category"];
+                        camp.PriceRange = Convert.ToInt32(dr["priceRange"]);
+                        camp.Phone = (string)dr["phone"];
+                        camp.Address = (string)dr["address"];
+                        camp.CuisineId = Convert.ToInt32(dr["cusiId"]);
+                        camp.Url = (string)dr["url"];
+                        camp.Highlights = getRestHighlights(camp.Id);
+                        rList.Add(camp);
                     }
                     return rList;
             }
             catch (Exception ex)
             {
-                // write to log
                 throw (ex);
             }
             finally

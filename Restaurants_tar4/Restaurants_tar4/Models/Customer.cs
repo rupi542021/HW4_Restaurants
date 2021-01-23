@@ -65,8 +65,11 @@ namespace tar2.Models
         }
         public void Update()
         {
-            DBServices dbs = new DBServices();          
-            dbs.UpdateCustomerHighlights(this);
+            DBServices dbs = new DBServices();
+            if (this.Chlist.Count > 0)
+                dbs.UpdateCustomerHighlights(this);
+            else
+                dbs.DeleteCustomerHighlights(this);
         }
     }
 }

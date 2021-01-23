@@ -16,7 +16,8 @@
     <script>
         $(document).ready(function () {
             selectedRadio = 0;
-            if (localStorage.getItem("customer") != "") {
+            if (localStorage.getItem("customer") != "") // logged in customer
+            {
                 let customer = JSON.parse(localStorage.getItem("customer"))
                 $("#nameTB").val(customer.Name);
                 $("#lnameTB").val(customer.Lastname);

@@ -16,33 +16,62 @@ namespace tar1.Controllers
 {
     public class businessesController : ApiController
     {
-        public List<Businesses> Get()
+        public HttpResponseMessage Get()
         {
             Businesses restaurant = new Businesses();
-            return restaurant.ReadAll();
+            List<Businesses> restList = new List<Businesses>();
+            try
+            {
+                restList = restaurant.ReadAll();
+                return Request.CreateResponse(HttpStatusCode.OK, restList);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex);
+            }
+  
         }
+
         [HttpGet]
         [Route("api/businesses/getRestCamp/{cusineId}")]
-        public List<Businesses> GetByCamp(int cusineId)
+        public HttpResponseMessage GetByCamp(int cusineId)
         {
             Businesses restcamp = new Businesses();
-            return restcamp.ReadByCamp(cusineId);
+            List<Businesses> campList = new List<Businesses>();
+            try
+            {
+                campList = restcamp.ReadByCamp(cusineId);
+                return Request.CreateResponse(HttpStatusCode.OK, campList);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex);
+            }
+   
         }
 
         [HttpGet]
         [Route("api/businesses/{cusineId}/{pr}")]
-        public List<Businesses> Get(int cusineId, int pr)
+        public HttpResponseMessage Get(int cusineId, int pr)
         {
             Businesses restaurant = new Businesses();
-            return restaurant.Read(cusineId,pr);
+            List<Businesses> campList = new List<Businesses>();
+            try
+            {
+                campList = restaurant.Read(cusineId, pr);
+                return Request.CreateResponse(HttpStatusCode.OK, campList);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex);
+            }
         }
 
+        //checking if the customer already exists in the DB
         [HttpGet]
         [Route("api/businesses/checkCust")]
         public HttpResponseMessage GetCustomer(string email, string pass) {
             Customer c = new Customer();
-            c.Email = email;
-            c.Password = pass;
             try {
                 c = c.Read(email, pass);
                 return Request.CreateResponse(HttpStatusCode.OK, c);
@@ -51,6 +80,7 @@ namespace tar1.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "checking error");
             }
         }
+
         [HttpGet]
         [Route("api/businesses/checkCustEmail")]
         public HttpResponseMessage CheckEmailCustomer(string email)
@@ -116,6 +146,7 @@ namespace tar1.Controllers
 
         public HttpResponseMessage Put([FromBody] Customer c)
         {
+
             try
             {
                 c.Update();

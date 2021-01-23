@@ -17,7 +17,8 @@
 
         $(document).ready(function () {
             hArr = ["Wifi", "Serves Alcohol", "Breakfast", "Dinner", "Lunch", "Vegetarian Friendly", "Takeaway Available", "Credit Card", "Delivery", "Cash"];
-            if (localStorage.getItem("loggedIn") == "") {
+            if (localStorage.getItem("loggedIn") == "") // new customer
+            {
                 customerHighlight = [];
                 customerParse = JSON.parse(localStorage.getItem("customer"));
                 let str = `<ul>
@@ -91,7 +92,8 @@
         }
 
         function btnPostHighlight(){
-            if (localStorage.getItem("loggedIn") == "") {
+            if (localStorage.getItem("loggedIn") == "")
+            {
                 customerParse.ChList = customerHighlight;
                 ajaxCall("POST", "../api/businesses/cusTomer", JSON.stringify(customerParse), postSuccess, postError);
             }
@@ -112,7 +114,6 @@
             swal("Updateing preferences failed :(", "Please Try Again", "warning");
         }
         function postSuccess(data) {
-            console.log(data);
             localStorage.setItem("loggedIn", JSON.stringify(data));
             swal("Hi "+data.Name+"! Your Details Added Successfuly!", "Thank you :)", "success").then(function () { window.location.href = 'Favorites.html' });
         }
